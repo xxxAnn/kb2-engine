@@ -8,20 +8,23 @@ pub struct Recipe {
     outputs: Vec<(usize, u64)>
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum ItemClass {
     Currency,
-    Resource
+    Resource,
+    Tool
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Item {
     id: usize,
     name: String,
     class: ItemClass,
     exploit: f32,
     fishing: f32,
-    edible: bool
+    edible: bool,
+    exploitable: u32,
+    fishable: u32
 }
 
 #[derive(Debug)]
@@ -34,6 +37,7 @@ impl ItemClass {
     pub fn new(inp: impl Into<String>) -> Self {
         match inp.into().as_ref() {
             "Currency" => Self::Currency,
+            "Tool" => Self::Tool,
             _ => Self::Resource
         }
     }
@@ -41,15 +45,17 @@ impl ItemClass {
 
 impl Item {
     pub fn new(fields: Vec<&str>) -> Self {
-        if fields.len() != 6 {
+        if fields.len() != 8 {
             panic!("Invalid item in Object Table");
         }
         let id: usize = fields[0].parse().unwrap();
-        let name: String = fields[1].to_string();
+        let name: String = fields[1].to_string().replace('_', " ");
         let class: ItemClass = ItemClass::new(fields[2]);
         let exploit: f32 = fields[3].parse().unwrap();
         let fishing: f32 = fields[4].parse().unwrap();
         let edible: bool = fields[5] != "0";
+        let exploitable: u32 = fields[6].parse().unwrap();
+        let fishable: u32 = fields[7].parse().unwrap();
 
         Self {
             id,
@@ -58,11 +64,17 @@ impl Item {
             exploit,
             fishing,
             edible,
+            exploitable,
+            fishable
         }
     }
 
     pub fn id(&self) -> usize {
         self.id
+    }
+
+    pub fn exploit(&self) -> f32 {
+        self.exploit
     }
 }
 
@@ -82,6 +94,14 @@ impl GameData {
             recipes,
             items
         }
+    }
+
+    pub fn get_item_by_id(&self, id: usize) -> Option<&Item> {
+        self.items.get(&id)
+    }
+
+    pub fn get_exploitable(&self) -> Vec<(&Item, u32)> {
+        self.items.iter().filter(|(_, v)| v.exploitable != 0).map(|(_, v)| (v, v.exploitable)).collect()
     }
 
     fn generate_recipes() -> Vec<Recipe> {

@@ -38,6 +38,10 @@ impl Data {
         self.connector.update_player_inventory(id, inv_str);
     }
 
+    pub fn gamedata(&self) -> &GameData {
+        &self.gamedata
+    }
+
     fn add_player(&mut self, id: u64) {
         self.users.push(
             User::new(id, &self.connector)
