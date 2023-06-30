@@ -1,0 +1,4 @@
+#ID, Name, Type, Exploit, Fishing, Edible
+0,Money,Currency,1,1,0
+1,Oil,Resource,1,1,0
+2,Plastic,Resource,1,1,0
