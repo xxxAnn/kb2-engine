@@ -8,7 +8,7 @@ const local_port: u16 = 7878;
 
 fn main() {
     let mut data = data::Data::new();
-    let mut ann = data.get_player(331431342438875137);
+    let ann = data.get_player(331431342438875137);
 
     //ann.add_item(2, 47, &data);
     //ann.save(&data);
