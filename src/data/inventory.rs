@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
-use crate::parser::parse_item_list;
+use crate::{utils::parser::parse_item_list, game::Game};
 
-use super::{gamedata::Item, Data};
+use super::{gamedata::{Item, GameData}, Data};
 
 #[derive(Debug, Clone)]
 pub struct Inventory {
@@ -22,17 +22,17 @@ impl Inventory {
         Self { pairs }
     }
 
-    pub fn get_total_exploit_multiplier(&self, data: &Data) -> f32 {
+    pub fn get_total_exploit_multiplier(&self, data: &GameData) -> f32 {
         self.get_all_items(data).into_iter().map(|(i, q)| {
             i.exploit() * (q as f32)
         }).sum::<f32>().max(1.)
     }
 
-    pub fn get_all_items(&self, data: &Data) -> Vec<(Item, u64)> {
+    pub fn get_all_items(&self, data: &GameData) -> Vec<(Item, u64)> {
         let mut res = Vec::new();
 
         for (k, v) in self.pairs.iter() {
-            if let Some(item) = data.gamedata().get_item_by_id(*k) {
+            if let Some(item) = data.get_item_by_id(*k) {
                 res.push((item.clone(), *v))
             }
         }
@@ -54,7 +54,8 @@ impl Inventory {
     }
 
     pub fn add_item(&mut self, id: usize, quantity: u64) {
-        self.pairs.insert(id, self.pairs.get(&id).unwrap_or(&0) + quantity);
+        let cq = self.pairs.get(&id).unwrap_or(&0);
+        self.pairs.insert(id, cq + quantity);
     }
 
     pub fn remove_item(&mut self, id: usize, quantity: u64) {

@@ -1,6 +1,10 @@
+use std::io::{Read, Write};
 use std::{net::TcpListener};
 
-use crate::handler::Handler;
+mod handler;
+
+pub use handler::Handler;
+pub use handler::BaseHandler;
 
 pub struct Server<T>
 where T: Handler {
@@ -30,7 +34,11 @@ where T: Handler {
         for strm in listener.incoming() {
             match strm {
                 Ok(mut conn) => {
-                    self.handler.handle(&mut conn);
+                    let mut buf = [0; 1024];
+
+                    conn.read(&mut buf).unwrap();
+
+                    conn.write(self.handler.handle(std::str::from_utf8(&buf).unwrap()).as_bytes()).unwrap();
                 },
                 _ => {}
             }

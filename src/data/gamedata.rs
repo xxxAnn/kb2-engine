@@ -1,8 +1,8 @@
 use std::{collections::HashMap};
 
-use crate::parser::parse_item_list;
+use crate::utils::parser::parse_item_list;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Recipe {
     inputs: Vec<(usize, u64)>,
     outputs: Vec<(usize, u64)>
@@ -27,7 +27,7 @@ pub struct Item {
     fishable: u32
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct GameData {
     recipes: Vec<Recipe>,
     items: HashMap<usize, Item>,
@@ -41,7 +41,17 @@ impl ItemClass {
             _ => Self::Resource
         }
     }
+
+    fn as_string(&self) -> String {
+        match self {
+            ItemClass::Currency => format!("Currency"),
+            ItemClass::Resource => format!("Resource"),
+            ItemClass::Tool => format!("Tool"),
+            _ => format!("Resource")
+        }
+    }
 }
+
 
 impl Item {
     pub fn new(fields: Vec<&str>) -> Self {
@@ -75,6 +85,17 @@ impl Item {
 
     pub fn exploit(&self) -> f32 {
         self.exploit
+    }
+
+    pub fn as_string(&self) -> String {
+        format!("{},{},{},{},{},{},{}", 
+            self.id, 
+            self.name.replace(' ', "_"), 
+            self.class.as_string(), 
+            self.exploit, 
+            self.fishing, 
+            self.edible, 
+            self.fishable)
     }
 }
 

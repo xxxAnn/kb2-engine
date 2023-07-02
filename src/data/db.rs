@@ -43,9 +43,12 @@ impl DBConnection {
     }
 
     pub fn update_player_inventory(&self, id: u64, inv_str: impl Into<String>) {
+        let inv: String = inv_str.into();
+
+        
         let query = format!("
             UPDATE userdata SET inventory = '{}' WHERE userid = {}", 
-            inv_str.into(),
+            inv,
             id
         );
         self.conn.execute(query).unwrap();

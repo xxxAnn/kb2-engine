@@ -6,6 +6,7 @@ mod gamedata;
 use db::DBConnection;
 use gamedata::GameData;
 pub use user::User;
+pub use gamedata::Item;
 
 
 pub struct Data {
@@ -38,8 +39,8 @@ impl Data {
         self.connector.update_player_inventory(id, inv_str);
     }
 
-    pub fn gamedata(&self) -> &GameData {
-        &self.gamedata
+    pub fn gamedata(&self) -> GameData {
+        self.gamedata.clone()
     }
 
     fn add_player(&mut self, id: u64) {
@@ -48,26 +49,38 @@ impl Data {
         )
     }
 
-    pub fn get_player(&mut self, id: u64) -> User {
+    fn get_player_exists(&mut self, id: u64) -> Option<&mut User> {
         let mut found = None;
         
-        for user in &self.users {
+        for user in self.users.iter_mut() {
             if user.id() == id {
-                found = Some(user.clone());
+                found = Some(user);
                 break;
             }
         }
 
-        let usr = match found {
-            Some(f) => {
-                f
-            },
-            None => {
-                self.add_player(id);
-                self.get_player(id)
-            }
-        };
-
-        usr
+        found
     }
+
+    fn check_if_player_exists(&self, id: u64) -> bool {
+        let mut found = None;
+        
+        for user in self.users.iter() {
+            if user.id() == id {
+                found = Some(user);
+                break;
+            }
+        }
+
+        found.is_some()
+    }
+
+    pub fn get_player(&mut self, id: u64) -> &mut User {
+        if self.check_if_player_exists(id) {
+            self.get_player_exists(id).unwrap()
+        } else {
+            self.add_player(id);
+            self.get_player(id)
+        }
+    }        
 }
