@@ -41,15 +41,6 @@ impl ItemClass {
             _ => Self::Resource
         }
     }
-
-    fn as_string(&self) -> String {
-        match self {
-            ItemClass::Currency => format!("Currency"),
-            ItemClass::Resource => format!("Resource"),
-            ItemClass::Tool => format!("Tool"),
-            _ => format!("Resource")
-        }
-    }
 }
 
 
@@ -87,11 +78,26 @@ impl Item {
         self.exploit
     }
 
-    pub fn as_string(&self) -> String {
+    
+}
+
+impl ToString for ItemClass {
+    fn to_string(&self) -> String {
+        match self {
+            ItemClass::Currency => format!("Currency"),
+            ItemClass::Resource => format!("Resource"),
+            ItemClass::Tool => format!("Tool"),
+            _ => format!("Resource")
+        }
+    }
+}
+
+impl ToString for Item {
+    fn to_string(&self) -> String {
         format!("{},{},{},{},{},{},{}", 
             self.id, 
             self.name.replace(' ', "_"), 
-            self.class.as_string(), 
+            self.class.to_string(), 
             self.exploit, 
             self.fishing, 
             self.edible, 
@@ -105,6 +111,14 @@ impl Recipe {
     }
 }
 
+impl ToString for Recipe {
+    fn to_string(&self) -> String {
+        let inps = self.inputs.iter().map(|(id, q)| format!("{}:{}", id, q)).collect::<Vec<String>>().join(",");
+        let outs = self.outputs.iter().map(|(id, q)| format!("{}:{}", id, q)).collect::<Vec<String>>().join(",");
+        format!("{}->{}", inps, outs)
+    }
+}
+
 impl GameData {
     pub fn new() -> Self {
         let recipes = Self::generate_recipes();
@@ -115,6 +129,16 @@ impl GameData {
             recipes,
             items
         }
+    }
+
+    pub fn get_recipe_by_id(&self, id: usize) -> Option<&Recipe> {
+        self.recipes.get(0)
+    }   
+
+    pub fn recipes_text(&self) -> String {
+        let count = self.recipes.len();
+        let recipes_txt = self.recipes.iter().map(|r| r.to_string()).collect::<Vec<String>>().join("\r\n");
+        format!("{}\r\n{}", count, recipes_txt)
     }
 
     pub fn get_item_by_id(&self, id: usize) -> Option<&Item> {

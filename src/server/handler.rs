@@ -1,5 +1,3 @@
-use std::{net::TcpStream, io::{Read, Write}};
-
 pub trait Handler {
     fn handle(&mut self, recv: impl Into<String>) -> String {
         println!("Received: '{}'", recv.into());

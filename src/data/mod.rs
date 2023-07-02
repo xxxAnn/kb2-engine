@@ -3,7 +3,6 @@ mod user;
 mod inventory;
 mod gamedata;
 
-use db::DBConnection;
 use gamedata::GameData;
 pub use user::User;
 pub use gamedata::Item;
@@ -12,7 +11,6 @@ pub use gamedata::Item;
 pub struct Data {
     users: Vec<User>,
     gamedata: GameData,
-    connector: DBConnection
 }
 
 impl std::fmt::Debug for Data {
@@ -26,17 +24,10 @@ impl std::fmt::Debug for Data {
 
 impl Data {
     pub fn new() -> Self {
-        let connector = DBConnection::new();
-
         Self {
             users: Vec::new(),
             gamedata: GameData::new(),
-            connector
         }
-    }
-
-    pub fn update_player_inventory(&self, id: u64, inv_str: impl Into<String>) {
-        self.connector.update_player_inventory(id, inv_str);
     }
 
     pub fn gamedata(&self) -> GameData {
@@ -45,14 +36,27 @@ impl Data {
 
     fn add_player(&mut self, id: u64) {
         self.users.push(
-            User::new(id, &self.connector)
+            User::new(id)
         )
     }
 
-    fn get_player_exists(&mut self, id: u64) -> Option<&mut User> {
+    fn get_player_mut(&mut self, id: u64) -> Option<&mut User> {
         let mut found = None;
         
         for user in self.users.iter_mut() {
+            if user.id() == id {
+                found = Some(user);
+                break;
+            }
+        }
+
+        found
+    }
+
+    fn get_player(&self, id: u64) -> Option<&User> {
+        let mut found = None;
+        
+        for user in self.users.iter() {
             if user.id() == id {
                 found = Some(user);
                 break;
@@ -75,12 +79,21 @@ impl Data {
         found.is_some()
     }
 
-    pub fn get_player(&mut self, id: u64) -> &mut User {
+    pub fn player(&mut self, id: u64) -> &User {
         if self.check_if_player_exists(id) {
-            self.get_player_exists(id).unwrap()
+            self.get_player(id).unwrap()
         } else {
             self.add_player(id);
-            self.get_player(id)
+            self.player(id)
+        }
+    }
+
+    pub fn player_mut(&mut self, id: u64) -> &mut User {
+        if self.check_if_player_exists(id) {
+            self.get_player_mut(id).unwrap()
+        } else {
+            self.add_player(id);
+            self.player_mut(id)
         }
     }        
 }

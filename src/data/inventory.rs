@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
-use crate::{utils::parser::parse_item_list, game::Game};
+use crate::{utils::parser::parse_item_list};
 
-use super::{gamedata::{Item, GameData}, Data};
+use super::{gamedata::{Item, GameData}};
 
 #[derive(Debug, Clone)]
 pub struct Inventory {
@@ -59,7 +59,8 @@ impl Inventory {
     }
 
     pub fn remove_item(&mut self, id: usize, quantity: u64) {
-        self.pairs.insert(id, self.pairs.get(&id).unwrap_or(&0) - quantity);
+        let cq = self.pairs.get(&id).unwrap_or(&0);
+        self.pairs.insert(id, cq - quantity);
     }
 
     pub fn clear(&mut self) {

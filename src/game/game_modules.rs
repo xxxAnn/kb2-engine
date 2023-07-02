@@ -31,7 +31,7 @@ impl ExploitSummary {
 
 impl Summary for ExploitSummary {
     fn text(&self) -> String {
-        format!("{}\r\n{}\r\n{}", "exploit_summary_", self.quantity_obtained, self.item_obtained.as_string())
+        format!("{}\r\n{}\r\n{}", "exploit_summary_", self.quantity_obtained, self.item_obtained.to_string())
     }
 }
 
@@ -49,7 +49,7 @@ impl Summarize for Exploit<'_> {
 
     fn call(self) -> ExploitSummary {
         let gamedata = self.data.gamedata();
-        let mut user = self.data.get_player(self.userid);
+        let user = self.data.player_mut(self.userid);
 
         let temp = user.exploit(&gamedata);
         let res = temp

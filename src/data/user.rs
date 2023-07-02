@@ -1,11 +1,12 @@
-use crate::game::{Summary, Game};
+use crate::game::Summary;
 
-use super::{db::DBConnection, Data, inventory::Inventory, gamedata::{Item, GameData}};
+use super::{db::DBConnection, inventory::Inventory, gamedata::{Item, GameData}};
 use rand::prelude::*;
 
 pub struct User {
     id: u64,
     inventory: Inventory,
+    connector: DBConnection
 }
 
 impl std::fmt::Debug for User {
@@ -19,17 +20,19 @@ impl std::fmt::Debug for User {
 
 impl Clone for User {
     fn clone(&self) -> Self {
-        Self { id: self.id.clone(), inventory: self.inventory.clone() }
+        User::new(self.id)
     }
 }
 
 impl User {
-    pub fn new(id: u64, connector: &DBConnection) -> Self {
+    pub fn new(id: u64) -> Self {
+        let connector = DBConnection::new();
         let inventory = connector.get_player_inventory(id);
 
         Self {
             id,
             inventory,
+            connector
         }
     }    
 
@@ -46,22 +49,15 @@ impl User {
         self.save();
     }
 
-    pub fn remove_item(&mut self, item_id: usize, quantity: u64, data: &Data) {
+    pub fn remove_item(&mut self, item_id: usize, quantity: u64) {
         self.inventory.remove_item(item_id, quantity);
         self.save();
     }
 
     pub fn save(&mut self) {
         let inv_str = self.inventory.dump();
-
-        let db = DBConnection::new();
         
-        db.update_player_inventory(self.id, inv_str);
-    }
-
-    pub fn update(mut self, data: &Data) -> Self {
-        self.inventory = data.connector.get_player_inventory(self.id);
-        self
+        self.connector.update_player_inventory(self.id, inv_str);
     }
 
     pub fn exploit(&mut self, gamedata: &GameData) -> Vec<(Item, u64)> { // Vec<(Item obtained, Quantity)>
@@ -88,7 +84,7 @@ impl User {
             num -= weight;
         }
 
-        res.push((temp.clone(), temp_weight as u64 * self.get_total_multiplier(gamedata)));
+        res.push((temp, temp_weight as u64 * self.get_total_multiplier(gamedata)));
 
         for (el, q) in res.iter() {
             self.add_item(el.id(), * q);
@@ -97,7 +93,7 @@ impl User {
         res
     }
 
-    pub fn clear_inventory(&mut self, data: &Data) {
+    pub fn clear_inventory(&mut self) {
         self.inventory.clear();
         self.save()
     }
@@ -105,14 +101,15 @@ impl User {
     fn get_total_multiplier(&self, gd: &GameData) -> u64 {
         self.inventory.get_total_exploit_multiplier(gd).floor() as u64
     }
-
-    fn as_string(&self) -> String {
-        format!("{} = {}", self.id, self.inventory.dump())
-    }
 }
 
+impl ToString for User {
+    fn to_string(&self) -> String {
+        format!("{}={}", self.id, self.inventory.dump())
+    }
+}
 impl Summary for User {
     fn text(&self) -> String {
-        format!("{}\r\n{}", "get_user_", self.as_string())
+        format!("{}\r\n{}", "get_user_", self.to_string())
     }
 }
