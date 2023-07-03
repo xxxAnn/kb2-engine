@@ -87,7 +87,6 @@ impl ToString for ItemClass {
             ItemClass::Currency => format!("Currency"),
             ItemClass::Resource => format!("Resource"),
             ItemClass::Tool => format!("Tool"),
-            _ => format!("Resource")
         }
     }
 }
@@ -131,7 +130,7 @@ impl GameData {
         }
     }
 
-    pub fn get_recipe_by_id(&self, id: usize) -> Option<&Recipe> {
+    pub fn get_recipe_by_id(&self, _id: usize) -> Option<&Recipe> {
         self.recipes.get(0)
     }   
 

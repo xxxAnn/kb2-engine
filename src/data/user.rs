@@ -36,6 +36,7 @@ impl User {
         }
     }    
 
+    #[allow(dead_code)]
     pub fn money(&self) -> u64 {
         self.inventory.balance()
     }
@@ -49,6 +50,7 @@ impl User {
         self.save();
     }
 
+    #[allow(dead_code)]
     pub fn remove_item(&mut self, item_id: usize, quantity: u64) {
         self.inventory.remove_item(item_id, quantity);
         self.save();
@@ -93,6 +95,7 @@ impl User {
         res
     }
 
+    #[allow(dead_code)]
     pub fn clear_inventory(&mut self) {
         self.inventory.clear();
         self.save()

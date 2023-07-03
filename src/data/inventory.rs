@@ -48,7 +48,8 @@ impl Inventory {
 
         res[1..].to_string()
     }
-
+    
+    #[allow(dead_code)]
     pub fn balance(&self) -> u64 {
         *self.pairs.get(&0usize).unwrap_or(&0)
     }
@@ -58,11 +59,13 @@ impl Inventory {
         self.pairs.insert(id, cq + quantity);
     }
 
+    #[allow(dead_code)]
     pub fn remove_item(&mut self, id: usize, quantity: u64) {
         let cq = self.pairs.get(&id).unwrap_or(&0);
         self.pairs.insert(id, cq - quantity);
     }
 
+    #[allow(dead_code)]
     pub fn clear(&mut self) {
         self.pairs = HashMap::new();
         self.pairs.insert(0, 100);

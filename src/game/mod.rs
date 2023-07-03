@@ -58,7 +58,7 @@ impl Game {
         }
     }
 
-    fn handle_get_recipes(&mut self, gm: &GameMessage) -> String {
+    fn handle_get_recipes(&mut self, _gm: &GameMessage) -> String {
         let gd = self.data().gamedata();
         format!("get_recipes_\r\n{}", gd.recipes_text())
     }

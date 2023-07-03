@@ -10,6 +10,7 @@ pub struct BaseHandler;
 
 impl Handler for BaseHandler {}
 
+#[allow(dead_code)]
 impl BaseHandler {
     pub fn new() -> Self {
         Self {}
