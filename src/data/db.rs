@@ -1,7 +1,7 @@
 use sqlite::Connection;
-use super::inventory::Inventory;
+use crate::defs::DB_PATH;
 
-const DB_PATH: &str = "data.db";
+use super::inventory::Inventory;
 
 pub struct DBConnection {
     conn: Connection
