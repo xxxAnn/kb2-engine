@@ -1,6 +1,6 @@
 use crate::{prelude::Data, game::message::GameMessage, defs::ErrorType};
 
-use super::{Summary, Summarize};
+use super::{Summarize};
 
 pub struct GetRecipes<'a> {
     data: &'a mut Data,
@@ -21,7 +21,7 @@ impl<'a> Summarize<'a> for GetRecipes<'a> {
         Ok(format!("get_recipes_\r\n{}", self.data.gamedata().recipes_text()))
     }
 
-    fn from_message(data: &'a mut Data, gm: &GameMessage) -> Result<Self, ErrorType> {
+    fn from_message(data: &'a mut Data, _gm: &GameMessage) -> Result<Self, ErrorType> {
         Ok(GetRecipes::new(data))
     }
 }

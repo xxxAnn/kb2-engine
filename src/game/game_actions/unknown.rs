@@ -21,7 +21,7 @@ impl<'a> Summarize<'a> for Unknown<'a> {
         Ok("Unkown Action Code".to_owned())
     }
 
-    fn from_message(data: &'a mut Data, gm: &GameMessage) -> Result<Self, ErrorType> {
+    fn from_message(data: &'a mut Data, _gm: &GameMessage) -> Result<Self, ErrorType> {
         Ok(Unknown::new(data))
     }
 }

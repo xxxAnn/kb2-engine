@@ -1,4 +1,4 @@
-use rand::Error;
+
 
 use crate::{prelude::Data, game::message::GameMessage, defs::ErrorType};
 
@@ -25,7 +25,7 @@ impl Summary for AvailableRecipesSummary {
     fn text(&self) -> String {
         format!("{}\r\n{}\r\n", "available_recipes_", self.recipe_ids
             .iter()
-            .map(|id| id.to_string())
+            .map(ToString::to_string)
             .collect::<Vec<String>>()
             .join(",")
         )
