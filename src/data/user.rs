@@ -1,6 +1,6 @@
-use crate::{game::{Summary, self}, defs::{ErrorType, BASE_QUANTITY}};
+use crate::{game::Summary, defs::{ErrorType, BASE_QUANTITY}};
 
-use super::{db::DBConnection, inventory::Inventory, gamedata::{Item, GameData, Recipe, self}};
+use super::{db::DBConnection, inventory::Inventory, gamedata::{Item, GameData, Recipe}};
 use rand::prelude::*;
 
 pub struct User {
