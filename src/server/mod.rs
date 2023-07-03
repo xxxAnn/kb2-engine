@@ -6,6 +6,8 @@ mod handler;
 pub use handler::Handler;
 pub use handler::BaseHandler;
 
+use crate::defs::ErrorType;
+
 pub struct Server<T>
 where T: Handler {
     addr: String,
@@ -28,8 +30,8 @@ where T: Handler {
     }
 
 
-    pub fn serve(&mut self) -> std::io::Result<()> {
-        let listener = TcpListener::bind(self.__create_binding_addr())?;
+    pub fn serve(&mut self) -> Result<(), ErrorType> {
+        let listener = TcpListener::bind(self.__create_binding_addr()).unwrap();
 
         for strm in listener.incoming() {
             match strm {
@@ -37,8 +39,10 @@ where T: Handler {
                     let mut buf = [0; 1024];
 
                     conn.read(&mut buf).unwrap();
+                    
+                    let recv = std::str::from_utf8(&buf).unwrap_or("");
 
-                    conn.write(self.handler.handle(std::str::from_utf8(&buf).unwrap()).as_bytes()).unwrap();
+                    conn.write(self.handler.handle(recv)?.as_bytes()).unwrap();
                 },
                 _ => {}
             }

@@ -1,8 +1,10 @@
+use crate::defs::ErrorType;
+
 pub trait Handler {
-    fn handle(&mut self, recv: impl Into<String>) -> String {
+    fn handle(&mut self, recv: impl Into<String>) -> Result<String, ErrorType> {
         println!("Received: '{}'", recv.into());
 
-        "ACK".to_string()
+        Ok("ACK".to_string())
     }
 }
 

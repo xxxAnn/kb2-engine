@@ -1,13 +1,11 @@
-mod game_modules;
 mod message;
+pub mod game_actions;
 
-use game_modules::{Exploit, Summarize, ExploitSummary};
+use crate::{prelude::{Data, Handler}, defs::ErrorType};
 
-use crate::prelude::{Data, Handler};
+pub use game_actions::Summary;
 
-pub use game_modules::Summary;
-
-use self::{message::{GameMessage, Dispatcher}, game_modules::AvailableRecipes};
+use message::GameMessage;
 
 pub struct Game {
     data: Data
@@ -26,17 +24,6 @@ impl Game {
 
     pub fn data(&self) -> &Data {
         &self.data
-    }
-
-    pub fn exploit(&mut self, userid: u64) -> ExploitSummary {
-        Exploit::new(self.data_mut(), userid).call()
-    }
-
-    fn handle_exploit(&mut self, gm: &GameMessage) -> String {
-        match gm.get_numeric_line(1) {
-            Ok(l) => self.exploit(l).text(),
-            Err(e) => e
-        }
     }
 
     fn handle_get_user(&mut self, gm: &GameMessage) -> String {
@@ -62,32 +49,13 @@ impl Game {
         let gd = self.data().gamedata();
         format!("get_recipes_\r\n{}", gd.recipes_text())
     }
-
-    fn handle_available_recipes(&mut self, gm: &GameMessage) -> String {
-        match gm.get_numeric_line(1) {
-            Ok(l) => AvailableRecipes::new(self.data_mut(), l).call().text(),
-            Err(e) => e
-        }
-    }
 }
 
 impl Handler for Game {
-    fn handle(&mut self, recv: impl Into<String>) -> String {
+    fn handle(&mut self, recv: impl Into<String>) -> Result<String, ErrorType> {
         let recv_str: String = recv.into();
-        let msg = GameMessage::new(recv_str);
+        let gm = GameMessage::new(recv_str)?;
 
-        match msg {
-            Ok(gm) => {
-                match gm.dispatch() {
-                    Dispatcher::Exploit => self.handle_exploit(&gm),
-                    Dispatcher::GetUser => self.handle_get_user(&gm),
-                    Dispatcher::GetRecipes => self.handle_get_recipes(&gm),
-                    Dispatcher::GetRecipe => self.handle_get_recipe(&gm),
-                    Dispatcher::AvailableRecipes => self.handle_available_recipes(&gm),
-                    Dispatcher::Unknown => "Invalid action code".to_owned()
-                }
-            }
-            Err(e) => e
-        }
+        Ok(gm.dispatch().call(&gm, self.data_mut())?.text())
     }
 }

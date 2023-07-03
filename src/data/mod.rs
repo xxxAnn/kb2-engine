@@ -81,7 +81,7 @@ impl Data {
 
     pub fn player(&mut self, id: u64) -> &User {
         if self.check_if_player_exists(id) {
-            self.get_player(id).unwrap()
+            self.get_player(id).unwrap() // shouldn't panic
         } else {
             self.add_player(id);
             self.player(id)
@@ -90,7 +90,7 @@ impl Data {
 
     pub fn player_mut(&mut self, id: u64) -> &mut User {
         if self.check_if_player_exists(id) {
-            self.get_player_mut(id).unwrap()
+            self.get_player_mut(id).unwrap() // shouldn't panic
         } else {
             self.add_player(id);
             self.player_mut(id)

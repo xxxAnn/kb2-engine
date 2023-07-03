@@ -5,6 +5,7 @@ mod data;
 mod utils;
 mod game;
 mod prelude;
+mod defs;
 
 use prelude::*; 
 

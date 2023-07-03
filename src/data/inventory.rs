@@ -33,7 +33,8 @@ impl Inventory {
         let mut t = 0;
         
         for (id, q) in r.inps() {
-           t += if self.item_quantity(*id) >= q { 0 } else { 1 };
+            println!("{} of {}, need {}", self.item_quantity(*id), id, q);
+            t += if self.item_quantity(*id) >= q { 0 } else { 1 };
         }
 
         t == 0
