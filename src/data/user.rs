@@ -73,11 +73,9 @@ impl User {
         let mut num = rng.gen_range(0..max) + 1;
 
         let mut temp = gamedata.get_item_by_id(0).unwrap().clone();
-        let mut temp_weight= 1;
 
         for (item, weight) in items {
             temp = item.clone();
-            temp_weight = weight;
 
             if weight >= num {
                 break;
