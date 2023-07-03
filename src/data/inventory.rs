@@ -65,7 +65,7 @@ impl Inventory {
     pub fn dump(&self) -> String {
         let mut res = String::new();
         for (k, v) in &self.pairs {
-            res = format!("{},{}:{}", res, k, v);
+            res = format!("{res},{k}:{v}");
         }
 
         res[1..].to_string()
