@@ -110,6 +110,10 @@ impl Recipe {
     pub fn inps(&self) -> &[(usize, u64)] {
         &self.inputs
     }
+
+    pub fn outs(&self) -> &[(usize, u64)] {
+        &self.outputs
+    }
 }
 
 impl ToString for Recipe {

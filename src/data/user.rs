@@ -1,4 +1,4 @@
-use crate::game::Summary;
+use crate::{game::{Summary, self}, defs::ErrorType};
 
 use super::{db::DBConnection, inventory::Inventory, gamedata::{Item, GameData, Recipe}};
 use rand::prelude::*;
@@ -94,6 +94,14 @@ impl User {
 
         res
     }
+
+    pub fn craft(&mut self, gamedata: &GameData, recipe_id: usize) -> Result<Recipe, ErrorType> {
+        let rcp = gamedata.get_recipe_by_id(recipe_id).ok_or("Recipe not found".to_owned())?;
+
+        self.inventory.craft(rcp)?;
+
+        Ok(rcp.clone())
+    } 
 
     #[allow(dead_code)]
     pub fn clear_inventory(&mut self) {

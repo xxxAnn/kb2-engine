@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::{utils::parser::parse_item_list};
+use crate::{utils::parser::parse_item_list, defs::ErrorType};
 
 use super::{gamedata::{Item, GameData, Recipe}};
 
@@ -48,6 +48,23 @@ impl Inventory {
         self.get_all_items(data).into_iter().map(|(i, q)| {
             i.exploit() * (q as f32)
         }).sum::<f32>().max(1.)
+    }
+
+    fn __craft(&mut self, rcp: &Recipe) {
+        for (k, v) in rcp.inps() {
+            self.remove_item(*k, *v)
+        }
+        for (k, v) in rcp.outs() {
+            self.add_item(*k,*v)
+        }
+    } 
+
+    pub fn craft(&mut self, rcp: &Recipe) -> Result<(), ErrorType> {
+        if self.can_use_recipe(rcp) {
+            Ok(self.__craft(rcp))
+        } else {
+            Err("Recipe can't be crafted".to_owned())
+        }   
     }
 
     pub fn get_all_items(&self, data: &GameData) -> Vec<(Item, u64)> {
