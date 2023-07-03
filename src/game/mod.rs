@@ -7,7 +7,7 @@ use crate::prelude::{Data, Handler};
 
 pub use game_modules::Summary;
 
-use self::message::{GameMessage, Dispatcher};
+use self::{message::{GameMessage, Dispatcher}, game_modules::AvailableRecipes};
 
 pub struct Game {
     data: Data
@@ -58,9 +58,16 @@ impl Game {
         }
     }
 
-    fn handle_get_recipes(&mut self, _gm: &GameMessage) -> String {
+    fn handle_get_recipes(&mut self, _: &GameMessage) -> String {
         let gd = self.data().gamedata();
         format!("get_recipes_\r\n{}", gd.recipes_text())
+    }
+
+    fn handle_available_recipes(&mut self, gm: &GameMessage) -> String {
+        match gm.get_numeric_line(1) {
+            Ok(l) => AvailableRecipes::new(self.data_mut(), l).call().text(),
+            Err(e) => e
+        }
     }
 }
 
@@ -76,6 +83,7 @@ impl Handler for Game {
                     Dispatcher::GetUser => self.handle_get_user(&gm),
                     Dispatcher::GetRecipes => self.handle_get_recipes(&gm),
                     Dispatcher::GetRecipe => self.handle_get_recipe(&gm),
+                    Dispatcher::AvailableRecipes => self.handle_available_recipes(&gm),
                     Dispatcher::Unknown => "Invalid action code".to_owned()
                 }
             }

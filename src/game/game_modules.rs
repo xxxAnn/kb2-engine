@@ -15,9 +15,26 @@ pub struct Exploit<'a> {
     userid: u64   
 }
 
+pub struct AvailableRecipes<'a> {
+    data: &'a mut Data,
+    userid: u64
+}
+
 pub struct ExploitSummary {
     item_obtained: Item,
     quantity_obtained: u64
+}
+
+pub struct AvailableRecipesSummary {
+    recipe_ids: Vec<usize>
+}
+
+impl AvailableRecipesSummary {
+    fn new(recipe_ids: &[usize]) -> Self {
+        Self {
+            recipe_ids: recipe_ids.to_owned()
+        }
+    }
 }
 
 impl ExploitSummary {
@@ -29,13 +46,33 @@ impl ExploitSummary {
     }
 }
 
+impl Summary for AvailableRecipesSummary {
+    fn text(&self) -> String {
+        format!("{}\r\n{}\r\n", "available_recipes_", self.recipe_ids
+            .iter()
+            .map(|id| id.to_string())
+            .collect::<Vec<String>>()
+            .join(",")
+        )
+    }
+}
+
 impl Summary for ExploitSummary {
     fn text(&self) -> String {
-        format!("{}\r\n{}\r\n{}", "exploit_summary_", self.quantity_obtained, self.item_obtained.to_string())
+        format!("{}\r\n{}\r\n{}", "exploit_", self.quantity_obtained, self.item_obtained.to_string())
     }
 }
 
 impl<'a> Exploit<'a> {
+    pub fn new(data: &'a mut Data, userid: u64) -> Self {
+        Self {
+            data,
+            userid
+        }
+    }
+}
+
+impl<'a> AvailableRecipes<'a> {
     pub fn new(data: &'a mut Data, userid: u64) -> Self {
         Self {
             data,
@@ -57,5 +94,22 @@ impl Summarize for Exploit<'_> {
             .unwrap();
 
         ExploitSummary::new(res.0.clone(), res.1)
+    }
+}
+
+impl Summarize for AvailableRecipes<'_> {
+    type ResultSummary = AvailableRecipesSummary;
+
+    fn call(self) -> AvailableRecipesSummary {
+        let gamedata = self.data.gamedata();
+        let user = self.data.player_mut(self.userid);
+
+        let temp = user.possible_recipes(&gamedata);
+        let res = temp
+            .iter()
+            .map(|(id, _)| *id)
+            .collect::<Vec<usize>>();
+
+        AvailableRecipesSummary::new(&res)
     }
 }

@@ -108,6 +108,10 @@ impl Recipe {
     pub fn new(inputs: Vec<(usize, u64)>, outputs: Vec<(usize, u64)>) -> Self {
         Self { inputs, outputs }
     }
+
+    pub fn inps(&self) -> &[(usize, u64)] {
+        &self.inputs
+    }
 }
 
 impl ToString for Recipe {
@@ -138,6 +142,10 @@ impl GameData {
         let count = self.recipes.len();
         let recipes_txt = self.recipes.iter().map(|r| r.to_string()).collect::<Vec<String>>().join("\r\n");
         format!("{}\r\n{}", count, recipes_txt)
+    }
+
+    pub fn get_recipes(&self) -> &[Recipe] {
+        &self.recipes
     }
 
     pub fn get_item_by_id(&self, id: usize) -> Option<&Item> {

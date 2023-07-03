@@ -10,6 +10,7 @@ pub enum Dispatcher {
     GetUser,
     GetRecipes,
     GetRecipe,
+    AvailableRecipes,
     Unknown
 }
 
@@ -20,6 +21,7 @@ impl Dispatcher {
             1 => Dispatcher::GetUser,
             2 => Dispatcher::GetRecipes,
             3 => Dispatcher::GetRecipe,
+            4 => Dispatcher::AvailableRecipes,
             _ => Dispatcher::Unknown
         }
     }

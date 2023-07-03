@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::{utils::parser::parse_item_list};
 
-use super::{gamedata::{Item, GameData}};
+use super::{gamedata::{Item, GameData, Recipe}};
 
 #[derive(Debug, Clone)]
 pub struct Inventory {
@@ -20,6 +20,27 @@ impl Inventory {
         }
 
         Self { pairs }
+    }
+
+    pub fn possible_recipes(&self, data: &GameData) -> Vec<(usize, Recipe)> {
+        let recipes = data.get_recipes();
+        recipes.iter().enumerate().map(|(id, r)| (id, r.clone())).filter(|(_, r)| {
+            self.can_use_recipe(r)
+        }).collect()
+    }
+
+    pub fn can_use_recipe(&self, r: &Recipe) -> bool {
+        let mut t = 0;
+        
+        for (id, q) in r.inps() {
+           t += if self.item_quantity(*id) >= q { 0 } else { 1 };
+        }
+
+        t == 0
+    }
+
+    pub fn item_quantity(&self, id: usize) -> &u64 {
+        self.pairs.get(&id).unwrap_or(&0)
     }
 
     pub fn get_total_exploit_multiplier(&self, data: &GameData) -> f32 {

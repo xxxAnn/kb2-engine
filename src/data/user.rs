@@ -1,6 +1,6 @@
 use crate::game::Summary;
 
-use super::{db::DBConnection, inventory::Inventory, gamedata::{Item, GameData}};
+use super::{db::DBConnection, inventory::Inventory, gamedata::{Item, GameData, Recipe}};
 use rand::prelude::*;
 
 pub struct User {
@@ -103,6 +103,10 @@ impl User {
 
     fn get_total_multiplier(&self, gd: &GameData) -> u64 {
         self.inventory.get_total_exploit_multiplier(gd).floor() as u64
+    }
+
+    pub fn possible_recipes(&self, gd: &GameData) -> Vec<(usize, Recipe)> {
+        self.inventory.possible_recipes(gd)
     }
 }
 
