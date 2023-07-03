@@ -62,6 +62,10 @@ impl User {
         self.connector.update_player_inventory(self.id, inv_str);
     }
 
+    pub fn max_can_craft(&self, r: &Recipe) -> u64 {
+        self.inventory.how_many_recipe(r)
+    }
+
     fn get_exploit_quantity(&self, gm: &GameData) -> u64 {
         let mut rng = rand::thread_rng();
         let pcng: f32 = rng.gen();

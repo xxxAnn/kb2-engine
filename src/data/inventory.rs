@@ -29,6 +29,10 @@ impl Inventory {
         }).collect()
     }
 
+    pub fn how_many_recipe(&self, r: &Recipe) -> u64 {
+        r.inps().iter().map(|(i, q)| self.item_quantity(*i)/q).min().unwrap()
+    }
+
     pub fn can_use_recipe(&self, r: &Recipe) -> bool {
         let mut t = 0;
         

@@ -10,11 +10,11 @@ pub struct AvailableRecipes<'a> {
 }
 
 pub struct AvailableRecipesSummary {
-    recipe_ids: Vec<usize>
+    recipe_ids: Vec<(usize, u64)>
 }
 
 impl AvailableRecipesSummary {
-    fn new(recipe_ids: &[usize]) -> Self {
+    fn new(recipe_ids: &[(usize, u64)]) -> Self {
         Self {
             recipe_ids: recipe_ids.to_owned()
         }
@@ -23,9 +23,9 @@ impl AvailableRecipesSummary {
 
 impl Summary for AvailableRecipesSummary {
     fn text(&self) -> String {
-        format!("{}\r\n{}\r\n{}\r\n", "available_recipes_", self.recipe_ids.len(), self.recipe_ids
+        format!("{}\r\n{}{}{}\r\n", "available_recipes_", self.recipe_ids.len(), if self.recipe_ids.len() != 0 { "\r\n" } else {" "},  self.recipe_ids
             .iter()
-            .map(ToString::to_string)
+            .map(|(id, max)| format!("{id}:{max}"))
             .collect::<Vec<String>>()
             .join(",")
         )
@@ -51,8 +51,8 @@ impl<'a> Summarize<'a> for AvailableRecipes<'a> {
         let temp = user.possible_recipes(&gamedata);
         let res = temp
             .iter()
-            .map(|(id, _)| *id)
-            .collect::<Vec<usize>>();
+            .map(|(id, r)| (*id, user.max_can_craft(r)))
+            .collect::<Vec<(usize, u64)>>();
 
         Ok(AvailableRecipesSummary::new(&res))
     }
