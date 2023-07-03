@@ -1,4 +1,4 @@
-use crate::{game::{Summary, self}, defs::ErrorType};
+use crate::{game::{Summary, self}, defs::{ErrorType, BASE_QUANTITY}};
 
 use super::{db::DBConnection, inventory::Inventory, gamedata::{Item, GameData, Recipe}};
 use rand::prelude::*;
@@ -86,10 +86,12 @@ impl User {
             num -= weight;
         }
 
-        res.push((temp, u64::from(temp_weight) * self.get_total_multiplier(gamedata)));
+        let pcng: f32 = rng.gen();
+
+        res.push((temp, ((pcng + 0.1)/(1.0) * self.get_total_multiplier(gamedata) as f32 * BASE_QUANTITY).ceil() as u64));
 
         for (el, q) in &res {
-            self.add_item(el.id(), * q);
+            self.add_item(el.id(), *q);
         }
 
         res
@@ -109,8 +111,8 @@ impl User {
         self.save();
     }
 
-    fn get_total_multiplier(&self, gd: &GameData) -> u64 {
-        self.inventory.get_total_exploit_multiplier(gd).floor() as u64
+    fn get_total_multiplier(&self, gd: &GameData) -> f32 {
+        self.inventory.get_total_exploit_multiplier(gd)
     }
 
     pub fn possible_recipes(&self, gd: &GameData) -> Vec<(usize, Recipe)> {

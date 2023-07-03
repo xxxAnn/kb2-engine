@@ -44,8 +44,8 @@ def get_recipe(id):
     print(f"{str(data, 'UTF-8')}\r\n")
 
 print('')
-#//exploit(331431342438875137)
-#//get_user(331431342438875137)
+exploit(331431342438875137)
+get_user(331431342438875137)
 #//get_recipes()
 #//get_recipe(0)
-available_recipes(331431342438875137)
+#//available_recipes(331431342438875137)
