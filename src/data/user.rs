@@ -1,6 +1,6 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use crate::{game::Summary, defs::{ErrorType, BASE_QUANTITY, SPECIAL_ITEM}};
+use crate::{game::Summary, defs::{ErrorType, BASE_QUANTITY, special_item}};
 
 use super::{db::DBConnection, inventory::Inventory, gamedata::{Item, GameData, Recipe}};
 use rand::prelude::*;
@@ -50,7 +50,7 @@ impl User {
 
         if time_delta > 30 {
             self.last_energy_use = ctime;
-            self.inventory.add_item(SPECIAL_ITEM::ENERGY, time_delta/30)
+            self.inventory.add_item(special_item::ENERGY, time_delta/30)
         }
 
         
@@ -120,7 +120,7 @@ impl User {
 
         self.energy_use();
 
-        if self.inventory.item_quantity(SPECIAL_ITEM::ENERGY) == 0 {
+        if self.inventory.item_quantity(special_item::ENERGY) == 0 {
             Err("No energy left".to_owned())
         } else {
 
@@ -133,7 +133,7 @@ impl User {
                 )
             );
 
-            self.remove_item(SPECIAL_ITEM::ENERGY, 1);
+            self.remove_item(special_item::ENERGY, 1);
 
             for (el, q) in &res {
                 self.add_item(el.id(), *q);

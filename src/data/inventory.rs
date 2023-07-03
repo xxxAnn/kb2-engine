@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::{utils::parser::parse_item_list, defs::{ErrorType, SPECIAL_ITEM}};
+use crate::{utils::parser::parse_item_list, defs::{ErrorType, special_item}};
 
 use super::{gamedata::{Item, GameData, Recipe}};
 
@@ -45,8 +45,8 @@ impl Inventory {
 
     pub fn item_quantity(&self, id: usize) -> u64 {
         let default = match id {
-            SPECIAL_ITEM::MONEY => 100,
-            SPECIAL_ITEM::ENERGY => 5,
+            special_item::MONEY => 100,
+            special_item::ENERGY => 5,
             _ => 0
         };
         self.pairs.get(&id).unwrap_or(&default).clone()
@@ -98,12 +98,12 @@ impl Inventory {
     
     #[allow(dead_code)]
     pub fn balance(&self) -> u64 {
-        self.item_quantity(SPECIAL_ITEM::MONEY)
+        self.item_quantity(special_item::MONEY)
     }
 
     pub fn add_item(&mut self, id: usize, quantity: u64) {
         let cq = self.item_quantity(id);
-        if id == SPECIAL_ITEM::ENERGY {
+        if id == special_item::ENERGY {
             self.pairs.insert(id, (cq+quantity).min(5));
         } else {
             self.pairs.insert(id, cq + quantity);
@@ -119,7 +119,7 @@ impl Inventory {
     #[allow(dead_code)]
     pub fn clear(&mut self) {
         self.pairs = HashMap::new();
-        self.pairs.insert(SPECIAL_ITEM::MONEY, 100);
+        self.pairs.insert(special_item::MONEY, 100);
     }
 }
 
