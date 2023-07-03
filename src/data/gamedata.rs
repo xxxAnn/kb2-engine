@@ -10,7 +10,7 @@ pub struct Recipe {
 
 #[derive(Debug, Clone)]
 pub enum ItemClass {
-    Currency,
+    Special,
     Resource,
     Tool
 }
@@ -36,7 +36,7 @@ pub struct GameData {
 impl ItemClass {
     pub fn new(inp: impl Into<String>) -> Self {
         match inp.into().as_ref() {
-            "Currency" => Self::Currency,
+            "Special" => Self::Special,
             "Tool" => Self::Tool,
             _ => Self::Resource
         }
@@ -101,7 +101,7 @@ impl Item {
 impl ToString for ItemClass {
     fn to_string(&self) -> String {
         match self {
-            ItemClass::Currency => "Currency".to_string(),
+            ItemClass::Special => "Currency".to_string(),
             ItemClass::Resource => "Resource".to_string(),
             ItemClass::Tool => "Tool".to_string(),
         }

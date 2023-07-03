@@ -1,4 +1,6 @@
-use crate::{game::Summary, defs::{ErrorType, BASE_QUANTITY}};
+use std::time::{SystemTime, UNIX_EPOCH};
+
+use crate::{game::Summary, defs::{ErrorType, BASE_QUANTITY, SPECIAL_ITEM}};
 
 use super::{db::DBConnection, inventory::Inventory, gamedata::{Item, GameData, Recipe}};
 use rand::prelude::*;
@@ -6,6 +8,7 @@ use rand::prelude::*;
 pub struct User {
     id: u64,
     inventory: Inventory,
+    last_energy_use: u64,
     connector: DBConnection
 }
 
@@ -32,9 +35,26 @@ impl User {
         Self {
             id,
             inventory,
+            last_energy_use: 0,
             connector
         }
     }    
+
+    fn energy_use(&mut self) {
+        let ctime = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_secs();
+
+        let time_delta = ctime - self.last_energy_use;
+
+        if time_delta > 30 {
+            self.last_energy_use = ctime;
+            self.inventory.add_item(SPECIAL_ITEM::ENERGY, time_delta/30)
+        }
+
+        
+    }
 
     #[allow(dead_code)]
     pub fn money(&self) -> u64 {
@@ -96,21 +116,31 @@ impl User {
         temp
     }
 
-    pub fn exploit(&mut self, gamedata: &GameData) -> Vec<(Item, u64)> {
-        let mut res = Vec::new();
+    pub fn exploit(&mut self, gamedata: &GameData) -> Result<Vec<(Item, u64)>, ErrorType> {
 
-        res.push(
-            (
-                self.select_exploit_item(gamedata).unwrap(), // this shouldn't error unless the object table is modified
-                self.get_exploit_quantity(gamedata)
-            )
-        ); 
+        self.energy_use();
 
-        for (el, q) in &res {
-            self.add_item(el.id(), *q);
+        if self.inventory.item_quantity(SPECIAL_ITEM::ENERGY) == 0 {
+            Err("No energy left".to_owned())
+        } else {
+
+            let mut res = Vec::new();
+
+            res.push(
+                (
+                    self.select_exploit_item(gamedata).unwrap(), // this shouldn't error unless the object table is modified
+                    self.get_exploit_quantity(gamedata)
+                )
+            );
+
+            self.remove_item(SPECIAL_ITEM::ENERGY, 1);
+
+            for (el, q) in &res {
+                self.add_item(el.id(), *q);
+            }
+
+            Ok(res)
         }
-
-        res
     }
 
     pub fn craft(&mut self, gamedata: &GameData, recipe_id: usize, quantity: u64) -> Result<Recipe, ErrorType> {

@@ -1,5 +1,6 @@
 #ID, Name, Type, Exploit, Fishing, Edible, Exploitable, Fishable
-0,Money,Currency,0,0,0,0,0
+0,Money,Special,0,0,0,0,0
 1,Oil,Resource,0,0,0,1,0
 2,Plastic,Resource,0,0,0,0,0
 3,Plastic_Pickaxe,Tool,1,0,0,0,0
+4,Energy,Special,0,0,0,0,0
