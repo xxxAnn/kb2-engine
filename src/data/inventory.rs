@@ -33,7 +33,6 @@ impl Inventory {
         let mut t = 0;
         
         for (id, q) in r.inps() {
-            println!("{} of {}, need {}", self.item_quantity(*id), id, q);
             t += i32::from(self.item_quantity(*id) < q);
         }
 

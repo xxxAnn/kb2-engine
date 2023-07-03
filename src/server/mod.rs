@@ -41,7 +41,12 @@ where T: Handler {
                 
                 let recv = std::str::from_utf8(&buf).unwrap_or("");
 
-                conn.write(self.handler.handle(recv)?.as_bytes()).unwrap();
+                let res = match self.handler.handle(recv) {
+                    Ok(s) => s,
+                    Err(s) => format!("err_\r\n{}", s)
+                };
+
+                conn.write(res.as_bytes()).unwrap();
             }
         }
 

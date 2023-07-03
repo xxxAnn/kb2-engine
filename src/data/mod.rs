@@ -5,7 +5,7 @@ mod gamedata;
 
 use gamedata::GameData;
 pub use user::User;
-pub use gamedata::Item;
+pub use gamedata::{Item, Recipe};
 
 
 pub struct Data {

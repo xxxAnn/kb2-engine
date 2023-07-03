@@ -1,4 +1,4 @@
-use std::{collections::HashMap};
+use std::{collections::HashMap, ops::Mul};
 
 use crate::utils::parser::parse_item_list;
 
@@ -40,6 +40,25 @@ impl ItemClass {
             "Tool" => Self::Tool,
             _ => Self::Resource
         }
+    }
+}
+
+impl Mul<u64> for &Recipe {
+    type Output = Recipe;
+
+    fn mul(self, rhs: u64) -> Self::Output {
+        let new_inps = self.inps().iter().map(|(id, q)| (*id, q*rhs)).collect();
+        let new_outs = self.outs().iter().map(|(id, q)| (*id, q*rhs)).collect();
+
+        Recipe::new(new_inps, new_outs)
+    }
+}
+
+impl Mul<&Recipe> for u64 {
+    type Output = Recipe;
+
+    fn mul(self, rhs: &Recipe) -> Self::Output {
+        rhs * self
     }
 }
 
