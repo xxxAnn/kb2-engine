@@ -1,7 +1,7 @@
 use sqlite::Connection;
 use super::inventory::Inventory;
 
-const DB_PATH: &'static str = "data.db";
+const DB_PATH: &str = "data.db";
 
 pub struct DBConnection {
     conn: Connection
@@ -18,16 +18,15 @@ impl DBConnection {
 
     fn _create_user(&self, userid: u64) {
         let query = format!("
-            INSERT INTO userdata (userid, inventory) VALUES ({}, '0:100')", 
-            userid
+            INSERT INTO userdata (userid, inventory) VALUES ({userid}, '0:100')"
         );
         self.conn.execute(query).unwrap();
     }
 
     fn _get_inventory_str(&self, userid: u64) -> Option<String> {
         let nquery = format!("
-            SELECT inventory FROM userdata WHERE userid = {}
-        ", userid);
+            SELECT inventory FROM userdata WHERE userid = {userid}
+        ");
     
         let mut inv_str = Option::None;
     
@@ -47,23 +46,18 @@ impl DBConnection {
 
         
         let query = format!("
-            UPDATE userdata SET inventory = '{}' WHERE userid = {}", 
-            inv,
-            id
+            UPDATE userdata SET inventory = '{inv}' WHERE userid = {id}"
         );
         self.conn.execute(query).unwrap();
     }
 
-    pub fn get_player_inventory(&self, userid: u64) -> Inventory {    
-        match self._get_inventory_str(userid) {
-            Some(tx) => {
-                Inventory::new(tx)
-            },
-            None => {
-                self._create_user(userid);
+    pub fn get_player_inventory(&self, userid: u64) -> Inventory {   
+        if let Some(tx) = self._get_inventory_str(userid) {
+            Inventory::new(tx)
+        } else {
+            self._create_user(userid);
     
-                Inventory::new("0:100")
-            }
+            Inventory::new("0:100")
         }
     }
 }

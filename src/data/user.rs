@@ -86,9 +86,9 @@ impl User {
             num -= weight;
         }
 
-        res.push((temp, temp_weight as u64 * self.get_total_multiplier(gamedata)));
+        res.push((temp, u64::from(temp_weight) * self.get_total_multiplier(gamedata)));
 
-        for (el, q) in res.iter() {
+        for (el, q) in &res {
             self.add_item(el.id(), * q);
         }
 
@@ -98,7 +98,7 @@ impl User {
     #[allow(dead_code)]
     pub fn clear_inventory(&mut self) {
         self.inventory.clear();
-        self.save()
+        self.save();
     }
 
     fn get_total_multiplier(&self, gd: &GameData) -> u64 {

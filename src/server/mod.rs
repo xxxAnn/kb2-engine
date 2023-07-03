@@ -21,7 +21,7 @@ where T: Handler {
         Self {
             addr: addr.into(),
             port: port.into(),
-            handler: handler.into()
+            handler
         }
     }
 
@@ -34,17 +34,14 @@ where T: Handler {
         let listener = TcpListener::bind(self.__create_binding_addr()).unwrap();
 
         for strm in listener.incoming() {
-            match strm {
-                Ok(mut conn) => {
-                    let mut buf = [0; 1024];
+            if let Ok(mut conn) = strm {
+                let mut buf = [0; 1024];
 
-                    conn.read(&mut buf).unwrap();
-                    
-                    let recv = std::str::from_utf8(&buf).unwrap_or("");
+                conn.read(&mut buf).unwrap();
+                
+                let recv = std::str::from_utf8(&buf).unwrap_or("");
 
-                    conn.write(self.handler.handle(recv)?.as_bytes()).unwrap();
-                },
-                _ => {}
+                conn.write(self.handler.handle(recv)?.as_bytes()).unwrap();
             }
         }
 

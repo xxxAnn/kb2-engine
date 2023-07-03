@@ -34,7 +34,7 @@ impl Inventory {
         
         for (id, q) in r.inps() {
             println!("{} of {}, need {}", self.item_quantity(*id), id, q);
-            t += if self.item_quantity(*id) >= q { 0 } else { 1 };
+            t += i32::from(self.item_quantity(*id) < q);
         }
 
         t == 0
@@ -53,9 +53,9 @@ impl Inventory {
     pub fn get_all_items(&self, data: &GameData) -> Vec<(Item, u64)> {
         let mut res = Vec::new();
 
-        for (k, v) in self.pairs.iter() {
+        for (k, v) in &self.pairs {
             if let Some(item) = data.get_item_by_id(*k) {
-                res.push((item.clone(), *v))
+                res.push((item.clone(), *v));
             }
         }
 
@@ -64,8 +64,8 @@ impl Inventory {
 
     pub fn dump(&self) -> String {
         let mut res = String::new();
-        for (k, v) in self.pairs.iter() {
-            res = format!("{},{}", res, format!("{}:{}", k, v));
+        for (k, v) in &self.pairs {
+            res = format!("{},{}:{}", res, k, v);
         }
 
         res[1..].to_string()

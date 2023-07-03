@@ -45,10 +45,8 @@ impl ItemClass {
 
 
 impl Item {
-    pub fn new(fields: Vec<&str>) -> Self {
-        if fields.len() != 8 {
-            panic!("Invalid item in Object Table");
-        }
+    pub fn new(fields: &[&str]) -> Self {
+        assert!(fields.len() == 8, "Invalid item in Object Table");
         let id: usize = fields[0].parse().unwrap();
         let name: String = fields[1].to_string().replace('_', " ");
         let class: ItemClass = ItemClass::new(fields[2]);
@@ -84,9 +82,9 @@ impl Item {
 impl ToString for ItemClass {
     fn to_string(&self) -> String {
         match self {
-            ItemClass::Currency => format!("Currency"),
-            ItemClass::Resource => format!("Resource"),
-            ItemClass::Tool => format!("Tool"),
+            ItemClass::Currency => "Currency".to_string(),
+            ItemClass::Resource => "Resource".to_string(),
+            ItemClass::Tool => "Tool".to_string(),
         }
     }
 }
@@ -116,9 +114,9 @@ impl Recipe {
 
 impl ToString for Recipe {
     fn to_string(&self) -> String {
-        let inps = self.inputs.iter().map(|(id, q)| format!("{}:{}", id, q)).collect::<Vec<String>>().join(",");
-        let outs = self.outputs.iter().map(|(id, q)| format!("{}:{}", id, q)).collect::<Vec<String>>().join(",");
-        format!("{}->{}", inps, outs)
+        let inps = self.inputs.iter().map(|(id, q)| format!("{id}:{q}")).collect::<Vec<String>>().join(",");
+        let outs = self.outputs.iter().map(|(id, q)| format!("{id}:{q}")).collect::<Vec<String>>().join(",");
+        format!("{inps}->{outs}")
     }
 }
 
@@ -140,8 +138,8 @@ impl GameData {
 
     pub fn recipes_text(&self) -> String {
         let count = self.recipes.len();
-        let recipes_txt = self.recipes.iter().map(|r| r.to_string()).collect::<Vec<String>>().join("\r\n");
-        format!("{}\r\n{}", count, recipes_txt)
+        let recipes_txt = self.recipes.iter().map(std::string::ToString::to_string).collect::<Vec<String>>().join("\r\n");
+        format!("{count}\r\n{recipes_txt}")
     }
 
     pub fn get_recipes(&self) -> &[Recipe] {
@@ -184,7 +182,7 @@ impl GameData {
             if !line.starts_with('#') {
                 let fields: Vec<&str> = line.split(',').collect();
 
-                let item = Item::new(fields);
+                let item = Item::new(&fields);
 
                 res.insert(item.id(), item);
             }

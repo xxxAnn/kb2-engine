@@ -37,13 +37,13 @@ impl Data {
     fn add_player(&mut self, id: u64) {
         self.users.push(
             User::new(id)
-        )
+        );
     }
 
     fn get_player_mut(&mut self, id: u64) -> Option<&mut User> {
         let mut found = None;
         
-        for user in self.users.iter_mut() {
+        for user in &mut self.users {
             if user.id() == id {
                 found = Some(user);
                 break;
@@ -56,7 +56,7 @@ impl Data {
     fn get_player(&self, id: u64) -> Option<&User> {
         let mut found = None;
         
-        for user in self.users.iter() {
+        for user in &self.users {
             if user.id() == id {
                 found = Some(user);
                 break;
@@ -69,7 +69,7 @@ impl Data {
     fn check_if_player_exists(&self, id: u64) -> bool {
         let mut found = None;
         
-        for user in self.users.iter() {
+        for user in &self.users {
             if user.id() == id {
                 found = Some(user);
                 break;
@@ -79,6 +79,7 @@ impl Data {
         found.is_some()
     }
 
+    #[allow(dead_code)]
     pub fn player(&mut self, id: u64) -> &User {
         if self.check_if_player_exists(id) {
             self.get_player(id).unwrap() // shouldn't panic

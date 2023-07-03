@@ -23,7 +23,7 @@ impl AvailableRecipesSummary {
 
 impl Summary for AvailableRecipesSummary {
     fn text(&self) -> String {
-        format!("{}\r\n{}\r\n", "available_recipes_", self.recipe_ids
+        format!("{}\r\n{}\r\n{}\r\n", "available_recipes_", self.recipe_ids.len(), self.recipe_ids
             .iter()
             .map(ToString::to_string)
             .collect::<Vec<String>>()

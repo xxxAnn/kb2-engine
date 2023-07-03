@@ -9,7 +9,7 @@ mod defs;
 
 use prelude::*; 
 
-const LOCAL_ADDR: &'static str = "127.0.0.1";
+const LOCAL_ADDR: &str = "127.0.0.1";
 const LOCAL_PORT: u16 = 7878;
 
 fn main() {
