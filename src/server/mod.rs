@@ -43,7 +43,7 @@ where T: Handler {
 
                 let res = match self.handler.handle(recv) {
                     Ok(s) => s,
-                    Err(s) => format!("{}", s)
+                    Err(s) => format!("{s}")
                 };
 
                 conn.write(res.as_bytes())?;

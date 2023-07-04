@@ -53,7 +53,7 @@ impl Inventory {
             special_item::ENERGY => 5,
             _ => 0
         };
-        self.pairs.get(&id).unwrap_or(&default).clone()
+        *self.pairs.get(&id).unwrap_or(&default)
     }
 
     pub fn get_total_exploit_multiplier(&self, data: &GameData) -> f32 {
@@ -73,7 +73,8 @@ impl Inventory {
 
     pub fn craft(&mut self, rcp: &Recipe) -> Kb2Result<()> {
         if self.can_use_recipe(rcp) {
-            Ok(self.__craft(rcp))
+            self.__craft(rcp);
+            Ok(())
         } else {
             Err(ErrorType::from("Recipe can't be crafted".to_owned()))
         }   

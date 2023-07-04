@@ -23,7 +23,7 @@ impl AvailableRecipesSummary {
 
 impl Summary for AvailableRecipesSummary {
     fn text(&self) -> String {
-        format!("{}\r\n{}{}{}\r\n", "available_recipes_", self.recipe_ids.len(), if self.recipe_ids.len() != 0 { "\r\n" } else {" "},  self.recipe_ids
+        format!("{}\r\n{}{}{}\r\n", "available_recipes_", self.recipe_ids.len(), if !self.recipe_ids.is_empty() { "\r\n" } else {" "},  self.recipe_ids
             .iter()
             .map(|(id, max)| format!("{id}:{max}"))
             .collect::<Vec<String>>()

@@ -65,21 +65,25 @@ impl User {
         self.id
     }
 
-    pub fn add_item(&mut self, item_id: usize, quantity: u64) {
+    pub fn add_item(&mut self, item_id: usize, quantity: u64) -> Kb2Result<()>{
         self.inventory.add_item(item_id, quantity);
-        self.save();
+        self.save()?;
+        Ok(())
     }
 
     #[allow(dead_code)]
-    pub fn remove_item(&mut self, item_id: usize, quantity: u64) {
+    pub fn remove_item(&mut self, item_id: usize, quantity: u64) -> Kb2Result<()> {
         self.inventory.remove_item(item_id, quantity);
-        self.save();
+        self.save()?;
+        Ok(())
     }
 
-    pub fn save(&mut self) {
+    pub fn save(&mut self) -> Kb2Result<()> {
         let inv_str = self.inventory.dump();
         
-        self.connector.update_player_inventory(self.id, inv_str);
+        self.connector.update_player_inventory(self.id, inv_str)?;
+
+        Ok(())
     }
 
     pub fn max_can_craft(&self, r: &Recipe) -> u64 {
@@ -90,7 +94,7 @@ impl User {
         let mut rng = rand::thread_rng();
         let pcng: f32 = rng.gen();
 
-        ((pcng + 0.1)/(1.0) * self.get_total_multiplier(gm) as f32 * BASE_QUANTITY).ceil() as u64
+        ((pcng + 0.1)/(1.0) * self.get_total_multiplier(gm) * BASE_QUANTITY).ceil() as u64
     }
 
     fn select_exploit_item(&self, gamedata: &GameData) -> Option<Item> {
@@ -133,10 +137,10 @@ impl User {
                 )
             );
 
-            self.remove_item(special_item::ENERGY, 1);
+            self.remove_item(special_item::ENERGY, 1)?;
 
             for (el, q) in &res {
-                self.add_item(el.id(), *q);
+                self.add_item(el.id(), *q)?;
             }
 
             Ok(res)
@@ -147,15 +151,16 @@ impl User {
         let rcp = quantity * gamedata.get_recipe_by_id(recipe_id).ok_or("Recipe not found".to_owned())?;
 
         self.inventory.craft(&rcp)?;
-        self.save();
+        self.save()?;
 
         Ok(rcp.clone())
     } 
 
     #[allow(dead_code)]
-    pub fn clear_inventory(&mut self) {
+    pub fn clear_inventory(&mut self) -> Kb2Result<()> {
         self.inventory.clear();
-        self.save();
+        self.save()?;
+        Ok(())
     }
 
     fn get_total_multiplier(&self, gd: &GameData) -> f32 {

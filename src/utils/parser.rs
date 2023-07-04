@@ -23,7 +23,7 @@ pub fn parse_item_list(t: impl Into<String>) -> Option<Vec<(usize, u64)>> {
         }
     }
 
-    if res.len() == 0 {
+    if res.is_empty() {
         None
     } else {
         Some(res)
@@ -84,7 +84,7 @@ pub fn extract_item_data(fields: &[&str]) -> Kb2Result<Item> {
         .get_field_and_parse(6, err_str)?;
 
     let fishable: u32 = fw
-        .get_field_and_parse(7, err_str)?;;
+        .get_field_and_parse(7, err_str)?;
 
     Ok(Item::new(id, name, class_str, exploit, fishing, edible, exploitable, fishable))
 }
