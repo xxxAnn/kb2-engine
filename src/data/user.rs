@@ -37,8 +37,13 @@ impl User {
             inventory,
             last_energy_use: 0,
             connector
-        }
+        }.init()
     }    
+
+    fn init(mut self) -> Self {
+        self.save();
+        self
+    }
 
     fn energy_use(&mut self) {
         let ctime = SystemTime::now()

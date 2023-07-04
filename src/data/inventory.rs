@@ -22,8 +22,15 @@ impl Inventory {
             }
 
         }
+        
+        Self { pairs }.init()
+    }
 
-        Self { pairs }
+    fn init(mut self) -> Self {
+        for item in special_item::LIST {
+            self.add_item(*item, 0);
+        }
+        self
     }
 
     pub fn possible_recipes(&self, data: &GameData) -> Vec<(usize, Recipe)> {
@@ -48,11 +55,7 @@ impl Inventory {
     }
 
     pub fn item_quantity(&self, id: usize) -> u64 {
-        let default = match id {
-            special_item::MONEY => 100,
-            special_item::ENERGY => 5,
-            _ => 0
-        };
+        let default = special_item::get_default(id);
         *self.pairs.get(&id).unwrap_or(&default)
     }
 
