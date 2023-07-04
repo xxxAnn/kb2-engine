@@ -1,5 +1,5 @@
 use sqlite::Connection;
-use crate::defs::{DB_PATH, Kb2Result};
+use crate::{defs::{DB_PATH, Kb2Result}};
 
 use super::inventory::Inventory;
 

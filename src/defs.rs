@@ -5,7 +5,8 @@ pub type Kb2Result<T> = Result<T, ErrorType>;
 
 pub const LOCAL_ADDR: &str = "127.0.0.1";
 pub const LOCAL_PORT: u16 = 7878;
-pub const DB_PATH: &str = "data.db";
+pub const DB_PATH: &str = "data/players.db";
+pub const MAP_PATH: &str = "data/MAP.KB2";
 pub const BASE_QUANTITY: f32 = 10.0;
 pub const OBJECT_TABLE_FILE: &str = "gamedata/OBJECT_TABLE.KB2";
 pub const CRAFT_RECIPES_FILE: &str = "gamedata/CRAFT_RECIPES.KB2";

@@ -1,6 +1,24 @@
-use std::str::FromStr;
+use std::{str::FromStr, collections::HashMap};
 
-use crate::{prelude::Item, defs::Kb2Result};
+use crate::{prelude::Item, defs::Kb2Result, data::TileType};
+
+pub fn parse_map(s: impl Into<String>) -> Kb2Result<Vec<Vec<TileType>>> {
+    let mut res = Vec::new();
+
+    let s_i: String = s.into();
+
+    for line in s_i.lines() {
+        let t = line.split(",").collect::<Vec<&str>>();
+        let mut temp = Vec::new();
+        for ind in t {
+            temp.push(TileType::from(ind.parse::<u64>().ok().ok_or("Couldn't parse tile")?));
+        }
+
+        res.push(temp)
+    }
+
+    Ok(res)
+}
 
 pub fn parse_item(t: impl Into<String>) -> Option<(usize, u64)> {
     let t_str: String = t.into();

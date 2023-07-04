@@ -2,15 +2,20 @@ mod db;
 mod user;
 mod inventory;
 mod gamedata;
+mod map;
 
 use gamedata::GameData;
 pub use user::User;
-pub use gamedata::{Item, Recipe};
+pub use gamedata::{Item, Recipe, TileType};
+pub use map::Map;
+
+use crate::{utils::parser::parse_map, defs::MAP_PATH};
 
 
 pub struct Data {
     users: Vec<User>,
     gamedata: GameData,
+    map: Map
 }
 
 impl std::fmt::Debug for Data {
@@ -27,9 +32,19 @@ impl Data {
         Self {
             users: Vec::new(),
             gamedata: GameData::new(),
+            map: Map::new(
+                parse_map(
+                    std::fs::read_to_string(MAP_PATH)
+                        .unwrap()
+                )
+                    .unwrap()
+            )
         }
     }
 
+    pub fn map(&self) -> Map {
+        self.map.clone()
+    }
     pub fn gamedata(&self) -> GameData {
         self.gamedata.clone()
     }

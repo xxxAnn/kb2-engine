@@ -2,7 +2,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 use crate::{game::Summary, defs::{ErrorType, BASE_QUANTITY, special_item, Kb2Result}};
 
-use super::{db::DBConnection, inventory::Inventory, gamedata::{Item, GameData, Recipe}};
+use super::{db::DBConnection, inventory::Inventory, gamedata::{Item, GameData, Recipe}, Map};
 use rand::prelude::*;
 
 pub struct User {
@@ -36,7 +36,7 @@ impl User {
             id,
             inventory,
             last_energy_use: 0,
-            connector
+            connector,
         }.init()
     }    
 
@@ -125,7 +125,7 @@ impl User {
         temp
     }
 
-    pub fn exploit(&mut self, gamedata: &GameData) -> Kb2Result<Vec<(Item, u64)>> {
+    pub fn exploit(&mut self, gamedata: &GameData, map: &Map) -> Kb2Result<Vec<(Item, u64)>> {
 
         self.energy_use();
 

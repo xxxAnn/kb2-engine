@@ -4,9 +4,11 @@ use crate::{utils::parser::{parse_item_list, extract_item_data}, defs::{OBJECT_T
 
 mod item;
 mod recipe;
+mod map;
 
 pub use item::Item;
 pub use recipe::Recipe;
+pub use map::TileType;
 
 #[derive(Debug, Clone)]
 pub struct GameData {

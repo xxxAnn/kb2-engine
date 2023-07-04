@@ -10,7 +10,7 @@ impl Unknown {
     }
 }
 
-impl Summarize<'_> for Unknown{
+impl Summarize<'_> for Unknown {
     type ResultSummary = String;
 
     fn call(self) -> Kb2Result<String> {
