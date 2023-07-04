@@ -1,4 +1,4 @@
-use crate::{prelude::Data, defs::{ErrorType, Kb2Result}};
+use crate::{prelude::Data, defs::{Kb2Result}};
 
 mod exploit;
 mod available_recipes;

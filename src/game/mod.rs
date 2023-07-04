@@ -1,7 +1,7 @@
 mod message;
 pub mod game_actions;
 
-use crate::{prelude::{Data, Handler}, defs::{ErrorType, Kb2Result}};
+use crate::{prelude::{Data, Handler}, defs::{Kb2Result}};
 
 pub use game_actions::Summary;
 

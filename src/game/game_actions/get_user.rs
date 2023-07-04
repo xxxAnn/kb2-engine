@@ -1,4 +1,4 @@
-use crate::{prelude::Data, game::message::GameMessage, defs::{ErrorType, Kb2Result}, utils::Kb2Error};
+use crate::{prelude::Data, game::message::GameMessage, defs::{Kb2Result}};
 
 use super::{Summary, Summarize};
 

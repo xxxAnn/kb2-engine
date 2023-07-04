@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use crate::{prelude::Data, defs::{ErrorType, Kb2Result}, utils::Kb2Error};
+use crate::{prelude::Data, defs::{ErrorType, Kb2Result}};
 
 use super::{Summary, game_actions::{Exploit, Summarize, AvailableRecipes, GetUser, Unknown, GetRecipe, GetRecipes, Craft}};
 

@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::{utils::{parser::parse_item_list, Kb2Error}, defs::{ErrorType, special_item, Kb2Result}};
+use crate::{utils::{parser::parse_item_list}, defs::{ErrorType, special_item, Kb2Result}};
 
 use super::{gamedata::{Item, GameData, Recipe}};
 

@@ -1,4 +1,4 @@
-use crate::defs::{ErrorType, Kb2Result};
+use crate::defs::{Kb2Result};
 
 pub trait Handler {
     fn handle(&mut self, recv: impl Into<String>) -> Kb2Result<String> {

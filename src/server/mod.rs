@@ -6,7 +6,7 @@ mod handler;
 pub use handler::Handler;
 pub use handler::BaseHandler;
 
-use crate::defs::{ErrorType, Kb2Result};
+use crate::defs::{Kb2Result};
 
 pub struct Server<T>
 where T: Handler {
