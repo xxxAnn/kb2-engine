@@ -103,6 +103,29 @@ impl Inventory {
 
         res[1..].to_string()
     }
+
+    pub fn dump_position(&self) -> String {
+        format!("{},{}", self.item_quantity(special_item::X_LOCATION), self.item_quantity(special_item::Y_LOCATION))
+    }
+
+    pub fn dump_energy(&self) -> u64 {
+        self.item_quantity(special_item::ENERGY)
+    }
+
+    pub fn dump_regular(&self) -> String {
+        let mut res = String::new();
+        for (k, v) in &self.pairs {
+            if !special_item::LIST.contains(k) {
+                res = format!("{res},{k}:{v}");
+            }
+        }
+
+        if res.len() > 1 {
+            res[1..].to_string()
+        } else {
+            res
+        }
+    }
     
     #[allow(dead_code)]
     pub fn balance(&self) -> u64 {

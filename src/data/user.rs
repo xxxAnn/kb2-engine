@@ -179,7 +179,13 @@ impl User {
 
 impl ToString for User {
     fn to_string(&self) -> String {
-        format!("{}={}", self.id, self.inventory.dump())
+        format!(
+            "{}\r\n{}\r\n{}\r\n{}\r\n{}", 
+            self.id, self.inventory.dump_regular(), 
+            self.inventory.balance(), 
+            self.inventory.dump_position(),
+            self.inventory.dump_energy()
+        )
     }
 }
 impl Summary for User {
