@@ -1,4 +1,4 @@
-use crate::{prelude::Data, defs::ErrorType};
+use crate::{prelude::Data, defs::{ErrorType, Kb2Result}};
 
 mod exploit;
 mod available_recipes;
@@ -25,8 +25,8 @@ pub trait Summary {
 pub trait Summarize<'a> {
     type ResultSummary: Summary;
 
-    fn call(self) -> Result<Self::ResultSummary, ErrorType>;
-    fn from_message(data: &'a mut Data, gm: &GameMessage) -> Result<Self, ErrorType>
+    fn call(self) -> Kb2Result<Self::ResultSummary>;
+    fn from_message(data: &'a mut Data, gm: &GameMessage) -> Kb2Result<Self>
     where Self: Sized;
 }
 

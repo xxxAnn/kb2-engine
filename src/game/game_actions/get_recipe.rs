@@ -1,6 +1,6 @@
 
 
-use crate::{prelude::Data, game::message::GameMessage, defs::ErrorType};
+use crate::{prelude::Data, game::message::GameMessage, defs::{ErrorType, Kb2Result}};
 
 use super::{Summarize};
 
@@ -21,7 +21,7 @@ impl<'a> GetRecipe<'a> {
 impl<'a> Summarize<'a> for GetRecipe<'a> {
     type ResultSummary = String;
 
-    fn call(self) -> Result<String, ErrorType> {
+    fn call(self) -> Kb2Result<String> {
         Ok(format!(
             "get_recipe_\r\n{}", 
             self
@@ -36,7 +36,7 @@ impl<'a> Summarize<'a> for GetRecipe<'a> {
         )
     }
 
-    fn from_message(data: &'a mut Data, gm: &GameMessage) -> Result<Self, ErrorType> {
+    fn from_message(data: &'a mut Data, gm: &GameMessage) -> Kb2Result<Self> {
         Ok(GetRecipe::new(data, gm.get_numeric_line(1)?))
     }
 }

@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::{utils::parser::parse_item_list, defs::{ErrorType, special_item}};
+use crate::{utils::{parser::parse_item_list, Kb2Error}, defs::{ErrorType, special_item, Kb2Result}};
 
 use super::{gamedata::{Item, GameData, Recipe}};
 
@@ -15,8 +15,12 @@ impl Inventory {
 
         let inv_str: String = inv_inp.into();
 
-        for (id, quantity) in parse_item_list(inv_str) {
-            pairs.insert(id, quantity);
+        if let Some(item_list) = parse_item_list(inv_str) {
+
+            for (id, quantity) in item_list {
+                pairs.insert(id, quantity);
+            }
+
         }
 
         Self { pairs }
@@ -30,7 +34,7 @@ impl Inventory {
     }
 
     pub fn how_many_recipe(&self, r: &Recipe) -> u64 {
-        r.inps().iter().map(|(i, q)| self.item_quantity(*i)/q).min().unwrap()
+        r.inps().iter().map(|(i, q)| self.item_quantity(*i)/q).min().unwrap_or(0)
     }
 
     pub fn can_use_recipe(&self, r: &Recipe) -> bool {
@@ -67,11 +71,11 @@ impl Inventory {
         }
     } 
 
-    pub fn craft(&mut self, rcp: &Recipe) -> Result<(), ErrorType> {
+    pub fn craft(&mut self, rcp: &Recipe) -> Kb2Result<()> {
         if self.can_use_recipe(rcp) {
             Ok(self.__craft(rcp))
         } else {
-            Err("Recipe can't be crafted".to_owned())
+            Err(ErrorType::from("Recipe can't be crafted".to_owned()))
         }   
     }
 

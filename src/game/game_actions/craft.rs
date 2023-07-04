@@ -1,4 +1,4 @@
-use crate::{prelude::Data, game::message::GameMessage, defs::ErrorType, data::Recipe};
+use crate::{prelude::Data, game::message::GameMessage, defs::{ErrorType, Kb2Result}, data::Recipe};
 
 use super::{Summary, Summarize};
 
@@ -41,14 +41,14 @@ impl Summary for CraftSummary {
 impl<'a> Summarize<'a> for Craft<'a> {
     type ResultSummary = CraftSummary;
 
-    fn call(self) -> Result<CraftSummary, ErrorType> {
+    fn call(self) -> Kb2Result<CraftSummary> {
         let gd = &self.data.gamedata();
         let user = self.data.player_mut(self.userid);
 
         Ok(CraftSummary::new(user.craft(gd, self.recipe_id, self.quantity)?))
     }
 
-    fn from_message(data: &'a mut Data, gm: &GameMessage) -> Result<Self, ErrorType> {
+    fn from_message(data: &'a mut Data, gm: &GameMessage) -> Kb2Result<Self> {
         Ok(Craft::new(
             data, 
             gm.get_numeric_line(1)?, 

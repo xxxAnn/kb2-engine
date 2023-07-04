@@ -1,6 +1,6 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use crate::{game::Summary, defs::{ErrorType, BASE_QUANTITY, special_item}};
+use crate::{game::Summary, defs::{ErrorType, BASE_QUANTITY, special_item, Kb2Result}};
 
 use super::{db::DBConnection, inventory::Inventory, gamedata::{Item, GameData, Recipe}};
 use rand::prelude::*;
@@ -29,7 +29,7 @@ impl Clone for User {
 
 impl User {
     pub fn new(id: u64) -> Self {
-        let connector = DBConnection::new();
+        let connector = DBConnection::new().expect("Could not connect to Database.");
         let inventory = connector.get_player_inventory(id);
 
         Self {
@@ -43,7 +43,7 @@ impl User {
     fn energy_use(&mut self) {
         let ctime = SystemTime::now()
             .duration_since(UNIX_EPOCH)
-            .unwrap()
+            .unwrap() // shouldn't panic unless the system clock is broken
             .as_secs();
 
         let time_delta = ctime - self.last_energy_use;
@@ -116,19 +116,19 @@ impl User {
         temp
     }
 
-    pub fn exploit(&mut self, gamedata: &GameData) -> Result<Vec<(Item, u64)>, ErrorType> {
+    pub fn exploit(&mut self, gamedata: &GameData) -> Kb2Result<Vec<(Item, u64)>> {
 
         self.energy_use();
 
         if self.inventory.item_quantity(special_item::ENERGY) == 0 {
-            Err("No energy left".to_owned())
+            Err(ErrorType::from("No energy left"))
         } else {
 
             let mut res = Vec::new();
 
             res.push(
                 (
-                    self.select_exploit_item(gamedata).unwrap(), // this shouldn't error unless the object table is modified
+                    self.select_exploit_item(gamedata).unwrap(), // this shouldn't panic unless the object table is modified
                     self.get_exploit_quantity(gamedata)
                 )
             );
@@ -143,7 +143,7 @@ impl User {
         }
     }
 
-    pub fn craft(&mut self, gamedata: &GameData, recipe_id: usize, quantity: u64) -> Result<Recipe, ErrorType> {
+    pub fn craft(&mut self, gamedata: &GameData, recipe_id: usize, quantity: u64) -> Kb2Result<Recipe> {
         let rcp = quantity * gamedata.get_recipe_by_id(recipe_id).ok_or("Recipe not found".to_owned())?;
 
         self.inventory.craft(&rcp)?;

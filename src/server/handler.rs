@@ -1,7 +1,7 @@
-use crate::defs::ErrorType;
+use crate::defs::{ErrorType, Kb2Result};
 
 pub trait Handler {
-    fn handle(&mut self, recv: impl Into<String>) -> Result<String, ErrorType> {
+    fn handle(&mut self, recv: impl Into<String>) -> Kb2Result<String> {
         println!("Received: '{}'", recv.into());
 
         Ok("ACK".to_string())

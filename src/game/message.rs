@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use crate::{prelude::Data, defs::ErrorType};
+use crate::{prelude::Data, defs::{ErrorType, Kb2Result}, utils::Kb2Error};
 
 use super::{Summary, game_actions::{Exploit, Summarize, AvailableRecipes, GetUser, Unknown, GetRecipe, GetRecipes, Craft}};
 
@@ -48,7 +48,7 @@ impl Dispatcher {
         }
     }
 
-    pub fn call(&self, gm: &GameMessage, data: &mut Data) -> Result<Box<dyn Summary>, ErrorType> {
+    pub fn call(&self, gm: &GameMessage, data: &mut Data) -> Kb2Result<Box<dyn Summary>> {
 
         caller!(
             self,
@@ -66,7 +66,7 @@ impl Dispatcher {
 }
 
 impl GameMessage {
-    pub fn new(text: &str) -> Result<Self, ErrorType> {
+    pub fn new(text: &str) -> Kb2Result<Self> {
         let mut data = text.lines();
         if let Some(code_str) = data.next() {
             if let Ok(code) = code_str.parse::<u16>() {
@@ -75,10 +75,10 @@ impl GameMessage {
                     data: data.map(std::borrow::ToOwned::to_owned).collect()
                 })
             } else {
-                Err("Code wasn't numeric".to_owned())
+                Err(ErrorType::from("Code wasn't numeric"))
             }
         } else {
-            Err("Malformed request".to_owned())
+            Err(ErrorType::MalformedRequest)
         }
     }
 
@@ -86,19 +86,19 @@ impl GameMessage {
         Dispatcher::from_code(self.code)
     }
 
-    pub fn get_line(&self, number: usize) -> Result<String, ErrorType> {
+    pub fn get_line(&self, number: usize) -> Kb2Result<String> {
         match self.data.get(number-1) {
             Some(line) => Ok(line.clone()),
-            None => Err("Malformed request".to_owned())
+            None => Err(ErrorType::MalformedRequest)
         }
     }
 
-    pub fn get_numeric_line<T>(&self, number: usize) -> Result<T, ErrorType> 
+    pub fn get_numeric_line<T>(&self, number: usize) -> Kb2Result<T> 
     where T: FromStr {
         let res = self.get_line(number)?;
         match res.parse() {
             Ok(l) => Ok(l),
-            Err(_) => Err("Expected numeric lined".to_owned())
+            Err(_) => Err(ErrorType::from("Expected numeric lined"))
         }
     }
 }

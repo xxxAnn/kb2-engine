@@ -1,4 +1,4 @@
-use crate::{prelude::Data, game::message::GameMessage, defs::ErrorType};
+use crate::{prelude::Data, game::message::GameMessage, defs::{ErrorType, Kb2Result}, utils::Kb2Error};
 
 use super::{Summary, Summarize};
 
@@ -19,13 +19,13 @@ impl<'a> GetUser<'a> {
 impl<'a> Summarize<'a> for GetUser<'a> {
     type ResultSummary = String;
 
-    fn call(self) -> Result<String, ErrorType> {
+    fn call(self) -> Kb2Result<String> {
         let user = self.data.player_mut(self.userid);
 
         Ok(user.text())
     }
 
-    fn from_message(data: &'a mut Data, gm: &GameMessage) -> Result<Self, ErrorType> {
+    fn from_message(data: &'a mut Data, gm: &GameMessage) -> Kb2Result<Self> {
         Ok(GetUser::new(data, gm.get_numeric_line(1)?))
     }
 }
