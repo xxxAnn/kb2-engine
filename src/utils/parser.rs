@@ -1,6 +1,34 @@
-use std::{str::FromStr, collections::HashMap};
+use std::str::FromStr;
 
-use crate::{prelude::Item, defs::Kb2Result, data::TileType};
+use crate::{prelude::Item, defs::Kb2Result, data::{TileType, TileClass}};
+
+fn parse_mults(s: impl Into<String>) -> Vec<(usize, u64)> {
+    let s_s: String = s.into();
+
+    s_s.split("&").into_iter().map(|s| parse_item(s)).filter(Option::is_some).map(|o| o.unwrap()).collect()
+}
+
+pub fn parse_tile_class(s: impl Into<String>) -> Kb2Result<TileClass> {
+    let s_s: String = s.into();
+
+    let mut splts = s_s.split(",");
+
+    let id: usize = splts.next()
+        .ok_or("Empty Tile Class Data.")?
+        .parse()
+        .or(Err("Couldn't parse Tile Class ID."))?;
+
+    let name: String = splts.next()
+        .ok_or("Tile Class has no name.")?
+        .to_owned();
+
+    let mults: Vec<(usize, u64)> = parse_mults(
+        splts.next()
+            .ok_or("Tile Class has no mults")?
+        );
+
+    Ok(TileClass::new(id, name, mults))
+}
 
 pub fn parse_map(s: impl Into<String>) -> Kb2Result<Vec<Vec<TileType>>> {
     let mut res = Vec::new();
@@ -24,8 +52,8 @@ pub fn parse_item(t: impl Into<String>) -> Option<(usize, u64)> {
     let t_str: String = t.into();
 
     let mut pair = t_str.split(':');
-    let id: usize = pair.next().unwrap().parse().ok()?;
-    let quantity: u64 = pair.next().unwrap().parse().ok()?;
+    let id: usize = pair.next()?.parse().ok()?;
+    let quantity: u64 = pair.next()?.parse().ok()?;
 
     Some((id, quantity))
 } 

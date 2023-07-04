@@ -2,7 +2,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 use crate::{game::Summary, defs::{ErrorType, BASE_QUANTITY, special_item, Kb2Result}};
 
-use super::{db::DBConnection, inventory::Inventory, gamedata::{Item, GameData, Recipe}, Map};
+use super::{db::DBConnection, inventory::Inventory, gamedata::{Item, GameData, Recipe}, Map, TileType};
 use rand::prelude::*;
 
 pub struct User {
@@ -125,9 +125,18 @@ impl User {
         temp
     }
 
-    pub fn exploit(&mut self, gamedata: &GameData, map: &Map) -> Kb2Result<Vec<(Item, u64)>> {
+    fn my_tile(&self, map: &mut Map) -> TileType {
+        map.get_tile(
+            self.inventory.item_quantity(special_item::X_LOCATION) as usize, 
+            self.inventory.item_quantity(special_item::X_LOCATION) as usize
+        ).clone()
+    }
+
+    pub fn exploit(&mut self, gamedata: &GameData, map: &mut Map) -> Kb2Result<Vec<(Item, u64)>> {
 
         self.energy_use();
+
+        let loc = self.my_tile(map);
 
         if self.inventory.item_quantity(special_item::ENERGY) == 0 {
             Err(ErrorType::from("No energy left"))
@@ -135,10 +144,12 @@ impl User {
 
             let mut res = Vec::new();
 
+            let itm = self.select_exploit_item(gamedata).unwrap();
+
             res.push(
                 (
                     self.select_exploit_item(gamedata).unwrap(), // this shouldn't panic unless the object table is modified
-                    self.get_exploit_quantity(gamedata)
+                    self.get_exploit_quantity(gamedata) * gamedata.get_multiplier(&loc, itm.id()).min(1)
                 )
             );
 

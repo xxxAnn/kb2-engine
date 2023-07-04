@@ -6,10 +6,10 @@ mod map;
 
 use gamedata::GameData;
 pub use user::User;
-pub use gamedata::{Item, Recipe, TileType};
+pub use gamedata::{Item, Recipe, TileType, MapData, TileClass};
 pub use map::Map;
 
-use crate::{utils::parser::parse_map, defs::MAP_PATH};
+use crate::{utils::parser::parse_map, defs::{MAP_PATH, Kb2Result}};
 
 
 pub struct Data {
@@ -40,6 +40,12 @@ impl Data {
                     .unwrap()
             )
         }
+    }
+
+    pub fn update_map(&mut self, mut map: Map) -> Kb2Result<()> {
+        map.save()?;
+        self.map = map;
+        Ok(())
     }
 
     pub fn map(&self) -> Map {

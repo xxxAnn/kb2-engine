@@ -1,14 +1,12 @@
 use rand::{thread_rng, Rng};
 
-use crate::defs::{MAP_PATH, Kb2Result};
+use crate::defs::{MAP_PATH, Kb2Result, MAP_SIZE};
 
 use super::gamedata::TileType;
-
-pub const MAX_SIZE: usize = 1000;
-
 #[derive(Clone)]
 pub struct Map {
-    m: Vec<Vec<TileType>>
+    m: Vec<Vec<TileType>>,
+    change: bool
 }
 
 impl ToString for TileType {
@@ -21,7 +19,8 @@ impl ToString for TileType {
 impl Map {
     pub fn new(m: Vec<Vec<TileType>>) -> Self {
         Self { 
-            m
+            m,
+            change: false
         }
     }
 
@@ -32,7 +31,7 @@ impl Map {
     fn generate_x_line(&self, x: usize) -> Vec<TileType> {
         let mut rng = thread_rng();
 
-        (0..=x).into_iter().map(|_| TileType::from(rng.gen_range(0..=2))).collect()
+        (0..=x).into_iter().map(|_| TileType::from(rng.gen_range(0..=2u64))).collect()
     }
 
     fn extend_x_line(&mut self, x: usize, y: usize) {
@@ -47,15 +46,18 @@ impl Map {
         }
     }
 
-    fn save(&self) -> Kb2Result<()> {
-        std::fs::write(MAP_PATH, self.dump())?;
+    pub fn save(&mut self) -> Kb2Result<()> {
+        if self.change {
+            std::fs::write(MAP_PATH, self.dump())?;
+            self.change = false;
+        }
         Ok(())
     }
 
     pub fn get_tile(&mut self, px: usize, py: usize) -> &TileType {
 
-        let x = px % MAX_SIZE;
-        let y = py % MAX_SIZE;
+        let x = px % MAP_SIZE;
+        let y = py % MAP_SIZE;
 
         let mut changes = false;
         if y >= self.m.len() {
@@ -69,9 +71,7 @@ impl Map {
             self.extend_x_line(x, y);
         }
 
-        if changes {
-            self.save().unwrap();
-        }
+        self.change = changes;
 
         &self.m[y][x]
     }

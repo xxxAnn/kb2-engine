@@ -1,6 +1,8 @@
 use std::collections::HashMap;
 
-#[derive(Clone, Debug, Hash)]
+use crate::{defs::MAP_DATA_FILE, utils::parser::parse_tile_class};
+
+#[derive(Clone, Debug, Hash, PartialEq, Eq)]
 pub enum TileType {
     Grassland,
     Mountain,
@@ -9,6 +11,16 @@ pub enum TileType {
 
 impl From<u64> for TileType {
     fn from(value: u64) -> Self {
+        match value {
+            1 => Self::Hill,
+            2 => Self::Mountain,
+            _ => Self::Grassland,            
+        }
+    }
+}
+
+impl From<usize> for TileType {
+    fn from(value: usize) -> Self {
         match value {
             1 => Self::Hill,
             2 => Self::Mountain,
@@ -27,12 +39,52 @@ impl From<TileType> for u64 {
     }
 }
 
+#[derive(Debug, Clone)]
 pub struct TileClass {
     id: usize,
     name: String, 
     mults: Vec<(usize, u64)>
 }
 
+#[derive(Debug, Clone)]
 pub struct MapData {
     cls: HashMap<TileType, TileClass>
+}
+
+impl TileClass {
+    pub fn new(id: usize, name: String, mults: Vec<(usize, u64)>) -> Self {
+        Self { id, name, mults }
+    }
+
+    pub fn get_multiplier(&self, i: usize) -> u64 {
+        let mut r = None;
+        for (id, mult) in &self.mults {
+            if i == *id {
+                r = Some(*mult)
+            }
+        }
+
+        r.unwrap_or(1)
+    }
+}
+
+impl MapData {
+    pub fn new() -> Self {
+        let mut cls = HashMap::new();
+
+        for line in std::fs::read_to_string(MAP_DATA_FILE).unwrap().lines() {
+            if !line.starts_with("#") {
+                let tmp = parse_tile_class(line).unwrap();
+                cls.insert(tmp.id.into(), tmp);
+            }
+        }
+
+        Self {
+            cls
+        }
+    }
+
+    pub fn tile(&self, tt: &TileType) -> Option<&TileClass> {
+        self.cls.get(tt)
+    }
 }

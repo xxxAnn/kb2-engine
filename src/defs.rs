@@ -9,7 +9,9 @@ pub const DB_PATH: &str = "data/players.db";
 pub const MAP_PATH: &str = "data/MAP.KB2";
 pub const BASE_QUANTITY: f32 = 10.0;
 pub const OBJECT_TABLE_FILE: &str = "gamedata/OBJECT_TABLE.KB2";
+pub const MAP_DATA_FILE: &str = "gamedata/MAP_DATA.KB2";
 pub const CRAFT_RECIPES_FILE: &str = "gamedata/CRAFT_RECIPES.KB2";
+pub const MAP_SIZE: usize = 1000;
 
 pub mod special_item {
     use rand::{thread_rng, Rng};

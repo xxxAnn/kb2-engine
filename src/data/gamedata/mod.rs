@@ -8,12 +8,13 @@ mod map;
 
 pub use item::Item;
 pub use recipe::Recipe;
-pub use map::TileType;
+pub use map::{MapData, TileType, TileClass};
 
 #[derive(Debug, Clone)]
 pub struct GameData {
     recipes: Vec<Recipe>,
     items: HashMap<usize, Item>,
+    map: MapData
 }
 
 impl GameData {
@@ -22,11 +23,24 @@ impl GameData {
 
         let items = Self::generate_items();
 
+        let map = MapData::new();
+
         Self {
             recipes,
-            items
+            items,
+            map
         }
     }
+
+    pub fn get_multiplier(&self, tt: &TileType, i: usize) -> u64 {
+        let cls = self.tile(&tt);
+
+        cls.get_multiplier(i)
+    }
+
+    pub fn tile(&self, tt: &TileType) -> &TileClass {
+        self.map.tile(tt).unwrap() // shouldn't error probably
+    } 
 
     pub fn get_recipe_by_id(&self, _id: usize) -> Option<&Recipe> {
         self.recipes.get(0)
