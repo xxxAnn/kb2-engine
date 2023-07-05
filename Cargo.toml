@@ -1,8 +1,6 @@
-[package]
-name = "kb2-engine"
-version = "0.1.0"
-edition = "2021"
+[workspace]
 
-[dependencies]
-rand = {version="0.8.5", features =["std"]}
-sqlite = "0.31.0"
+members = [
+    "kb2lib",
+    "kb2server"
+]
