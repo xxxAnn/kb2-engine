@@ -86,8 +86,6 @@ impl Map {
             temp_y
         };
 
-        println!("({}, {})", res_x, res_y);
-
         self.get_tile(res_x as usize, res_y as usize)
     }
 
