@@ -1,8 +1,8 @@
 use kb2lib::prelude::Dump;
 
-use crate::{Data, Item, game::message::GameMessage, Kb2Result, ErrorType, Recipe};
+use crate::{Data, game::message::GameMessage, Kb2Result, ErrorType};
 
-use super::{Summary, Summarize};
+use super::{Summarize};
 
 pub struct GetUser<'a> {
     data: &'a mut Data,

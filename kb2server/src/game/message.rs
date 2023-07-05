@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use crate::{Data, Item, Kb2Result, ErrorType, Recipe};
+use crate::{Data, Kb2Result, ErrorType};
 
 use super::Summary;
 
