@@ -1,4 +1,4 @@
-use crate::{Data, game::message::GameMessage, Kb2Result};
+use crate::{Data, game::message::GameMessage, Result};
 
 mod exploit;
 mod available_recipes;
@@ -25,8 +25,8 @@ pub trait Summary {
 pub trait Summarize<'a> {
     type ResultSummary: Summary;
 
-    fn call(self) -> Kb2Result<Self::ResultSummary>;
-    fn from_message(data: &'a mut Data, gm: &GameMessage) -> Kb2Result<Self>
+    fn call(self) -> Result<Self::ResultSummary>;
+    fn from_message(data: &'a mut Data, gm: &GameMessage) -> Result<Self>
     where Self: Sized;
 }
 

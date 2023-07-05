@@ -7,7 +7,7 @@ use game::Game;
 use kb2lib::prelude::*;
 use kb2lib::defs::*;
 
-fn main() -> Kb2Result<()> {
+fn main() -> Result<()> {
     let data = Data::new()?;
 
     Server::new(LOCAL_ADDR, LOCAL_PORT, Game::new(data))

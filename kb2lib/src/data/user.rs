@@ -1,6 +1,6 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use crate::{defs::{ErrorType, BASE_QUANTITY, special_item, Kb2Result}};
+use crate::{defs::{BASE_QUANTITY, special_item, Result}, utils::Error};
 
 use super::{db::DBConnection, inventory::Inventory, gamedata::{Item, GameData, Recipe}, Map, TileType, Dump};
 use rand::prelude::*;
@@ -21,7 +21,7 @@ impl std::fmt::Debug for User {
     }
 }
 impl User {
-    pub fn new(id: u64) -> Kb2Result<Self> {
+    pub fn new(id: u64) -> Result<Self> {
         let connector = DBConnection::new()?;
         let inventory = connector.get_player_inventory(id)?;
 
@@ -33,12 +33,12 @@ impl User {
         }.init()?)
     }    
 
-    fn init(mut self) -> Kb2Result<Self> {
+    fn init(mut self) -> Result<Self> {
         self.save()?;
         Ok(self)
     }
 
-    fn energy_use(&mut self) -> Kb2Result<()> {
+    fn energy_use(&mut self) -> Result<()> {
         let ctime = SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .or(Err("System time is broken"))?
@@ -63,20 +63,20 @@ impl User {
         self.id
     }
 
-    pub fn add_item(&mut self, item_id: usize, quantity: u64) -> Kb2Result<()>{
+    pub fn add_item(&mut self, item_id: usize, quantity: u64) -> Result<()>{
         self.inventory.add_item(item_id, quantity);
         self.save()?;
         Ok(())
     }
 
     #[allow(dead_code)]
-    pub fn remove_item(&mut self, item_id: usize, quantity: u64) -> Kb2Result<()> {
+    pub fn remove_item(&mut self, item_id: usize, quantity: u64) -> Result<()> {
         self.inventory.remove_item(item_id, quantity);
         self.save()?;
         Ok(())
     }
 
-    pub fn save(&mut self) -> Kb2Result<()> {
+    pub fn save(&mut self) -> Result<()> {
         let inv_str = self.inventory.dump();
         
         self.connector.update_player_inventory(self.id, inv_str)?;
@@ -125,14 +125,14 @@ impl User {
         ).clone()
     }
 
-    pub fn exploit(&mut self, gamedata: &GameData, map: &mut Map) -> Kb2Result<Vec<(Item, u64)>> {
+    pub fn exploit(&mut self, gamedata: &GameData, map: &mut Map) -> Result<Vec<(Item, u64)>> {
 
         self.energy_use()?;
 
         let loc = self.my_tile(map);
 
         if self.inventory.item_quantity(special_item::ENERGY) == 0 {
-            Err(ErrorType::from("No energy left"))
+            Err(Error::from("No energy left"))
         } else {
 
             let mut res = Vec::new();
@@ -157,7 +157,7 @@ impl User {
         }
     }
 
-    pub fn craft(&mut self, gamedata: &GameData, recipe_id: usize, quantity: u64) -> Kb2Result<Recipe> {
+    pub fn craft(&mut self, gamedata: &GameData, recipe_id: usize, quantity: u64) -> Result<Recipe> {
         let rcp = quantity * gamedata.get_recipe_by_id(recipe_id).ok_or("Recipe not found".to_owned())?;
 
         self.inventory.craft(&rcp)?;
@@ -167,7 +167,7 @@ impl User {
     } 
 
     #[allow(dead_code)]
-    pub fn clear_inventory(&mut self) -> Kb2Result<()> {
+    pub fn clear_inventory(&mut self) -> Result<()> {
         self.inventory.clear();
         self.save()?;
         Ok(())

@@ -12,7 +12,7 @@ pub use map::Map;
 pub use dump::Dump;
 
 
-use crate::{utils::parser::parse_map, defs::{MAP_PATH, Kb2Result}};
+use crate::{utils::parser::parse_map, defs::{MAP_PATH, Result}};
 
 
 pub struct Data {
@@ -31,7 +31,7 @@ impl std::fmt::Debug for Data {
 }
 
 impl Data {
-    pub fn new() -> Kb2Result<Self> {
+    pub fn new() -> Result<Self> {
         Ok(Self {
             users: Vec::new(),
             gamedata: GameData::new()?,
@@ -43,7 +43,7 @@ impl Data {
         })
     }
 
-    pub fn update_map(&mut self, mut map: Map) -> Kb2Result<()> {
+    pub fn update_map(&mut self, mut map: Map) -> Result<()> {
         map.save()?;
         self.map = map;
         Ok(())
@@ -56,7 +56,7 @@ impl Data {
         self.gamedata.clone()
     }
 
-    fn add_player(&mut self, id: u64) -> Kb2Result<()> {
+    fn add_player(&mut self, id: u64) -> Result<()> {
         self.users.push(
             User::new(id)?
         );

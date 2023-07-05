@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use crate::{Data, Kb2Result, ErrorType};
+use crate::{Data, Result, Error};
 
 use super::Summary;
 
@@ -52,7 +52,7 @@ impl Dispatcher {
         }
     }
 
-    pub fn call(&self, gm: &GameMessage, data: &mut Data) -> Kb2Result<Box<dyn Summary>> {
+    pub fn call(&self, gm: &GameMessage, data: &mut Data) -> Result<Box<dyn Summary>> {
 
         caller!(
             self,
@@ -71,7 +71,7 @@ impl Dispatcher {
 }
 
 impl GameMessage {
-    pub fn new(text: &str) -> Kb2Result<Self> {
+    pub fn new(text: &str) -> Result<Self> {
         let mut data = text.lines();
         if let Some(code_str) = data.next() {
             if let Ok(code) = code_str.parse::<u16>() {
@@ -80,10 +80,10 @@ impl GameMessage {
                     data: data.map(std::borrow::ToOwned::to_owned).collect()
                 })
             } else {
-                Err(ErrorType::from("Code wasn't numeric"))
+                Err(Error::from("Code wasn't numeric"))
             }
         } else {
-            Err(ErrorType::MalformedRequest)
+            Err(Error::MalformedRequest)
         }
     }
 
@@ -91,19 +91,19 @@ impl GameMessage {
         Dispatcher::from_code(self.code)
     }
 
-    pub fn get_line(&self, number: usize) -> Kb2Result<String> {
+    pub fn get_line(&self, number: usize) -> Result<String> {
         match self.data.get(number-1) {
             Some(line) => Ok(line.clone()),
-            None => Err(ErrorType::MalformedRequest)
+            None => Err(Error::MalformedRequest)
         }
     }
 
-    pub fn get_numeric_line<T>(&self, number: usize) -> Kb2Result<T> 
+    pub fn get_numeric_line<T>(&self, number: usize) -> Result<T> 
     where T: FromStr {
         let res = self.get_line(number)?;
         match res.parse() {
             Ok(l) => Ok(l),
-            Err(_) => Err(ErrorType::from("Expected numeric lined"))
+            Err(_) => Err(Error::from("Expected numeric lined"))
         }
     }
 }

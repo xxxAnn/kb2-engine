@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::{utils::{parser::parse_item_list}, defs::{ErrorType, special_item, Kb2Result}};
+use crate::{utils::{parser::parse_item_list}, defs::{special_item, Result}, utils::Error};
 
 use super::{gamedata::{Item, GameData, Recipe}, Dump};
 
@@ -74,12 +74,12 @@ impl Inventory {
         }
     } 
 
-    pub fn craft(&mut self, rcp: &Recipe) -> Kb2Result<()> {
+    pub fn craft(&mut self, rcp: &Recipe) -> Result<()> {
         if self.can_use_recipe(rcp) {
             self.__craft(rcp);
             Ok(())
         } else {
-            Err(ErrorType::from("Recipe can't be crafted".to_owned()))
+            Err(Error::from("Recipe can't be crafted"))
         }   
     }
 

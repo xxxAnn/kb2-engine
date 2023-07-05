@@ -1,7 +1,7 @@
 use crate::utils;
 
-pub type ErrorType = utils::Kb2Error;
-pub type Kb2Result<T> = Result<T, ErrorType>;
+pub type Result<T> = std::result::Result<T, utils::Error>;
+
 
 pub const LOCAL_ADDR: &str = "127.0.0.1";
 pub const LOCAL_PORT: u16 = 7878;

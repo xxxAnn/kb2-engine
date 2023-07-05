@@ -1,4 +1,4 @@
-use crate::{Data, game::message::GameMessage, Kb2Result};
+use crate::{Data, game::message::GameMessage, Result};
 
 use super::Summarize;
 
@@ -13,11 +13,11 @@ impl Unknown {
 impl Summarize<'_> for Unknown {
     type ResultSummary = String;
 
-    fn call(self) -> Kb2Result<String> {
+    fn call(self) -> Result<String> {
         Ok("Unkown Action Code".to_owned())
     }
 
-    fn from_message(_: &'_ mut Data, _: &GameMessage) -> Kb2Result<Self> {
+    fn from_message(_: &'_ mut Data, _: &GameMessage) -> Result<Self> {
         Ok(Unknown::new())
     }
 }

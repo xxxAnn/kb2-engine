@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::{defs::{MAP_DATA_FILE, Kb2Result}, utils::parser::parse_tile_class};
+use crate::{defs::{MAP_DATA_FILE, Result}, utils::parser::parse_tile_class};
 
 #[derive(Clone, Debug, Hash, PartialEq, Eq)]
 pub enum TileType {
@@ -70,7 +70,7 @@ impl TileClass {
 }
 
 impl MapData {
-    pub fn new() -> Kb2Result<Self> {
+    pub fn new() -> Result<Self> {
         let mut cls = HashMap::new();
 
         for line in std::fs::read_to_string(MAP_DATA_FILE)?.lines() {

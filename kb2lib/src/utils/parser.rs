@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use crate::{prelude::Item, defs::Kb2Result, data::{TileType, TileClass}};
+use crate::{prelude::Item, defs::Result, data::{TileType, TileClass}};
 
 fn parse_mults(s: impl Into<String>) -> Vec<(usize, u64)> {
     let s_s: String = s.into();
@@ -8,7 +8,7 @@ fn parse_mults(s: impl Into<String>) -> Vec<(usize, u64)> {
     s_s.split("&").into_iter().map(|s| parse_item(s)).flatten().collect() // the unwrap can't panic
 }
 
-pub fn parse_tile_class(s: impl Into<String>) -> Kb2Result<TileClass> {
+pub fn parse_tile_class(s: impl Into<String>) -> Result<TileClass> {
     let s_s: String = s.into();
 
     let mut splts = s_s.split(",");
@@ -30,7 +30,7 @@ pub fn parse_tile_class(s: impl Into<String>) -> Kb2Result<TileClass> {
     Ok(TileClass::new(id, name, mults))
 }
 
-pub fn parse_map(s: impl Into<String>) -> Kb2Result<Vec<Vec<TileType>>> {
+pub fn parse_map(s: impl Into<String>) -> Result<Vec<Vec<TileType>>> {
     let mut res = Vec::new();
 
     let s_i: String = s.into();
@@ -79,13 +79,13 @@ pub fn parse_item_list(t: impl Into<String>) -> Option<Vec<(usize, u64)>> {
 pub struct FieldsWrapper<'a>(&'a [&'a str]);
 
 impl FieldsWrapper<'_> {
-    fn get_field(&self, index: usize, err_str: impl Into<String>) -> Kb2Result<&str> {
+    fn get_field(&self, index: usize, err_str: impl Into<String>) -> Result<&str> {
         Ok(*self.0
             .get(index)
             .ok_or(err_str.into())?)
     }
 
-    fn get_field_and_parse<T>(&self, index: usize, err_str: impl Into<String>) -> Kb2Result<T>
+    fn get_field_and_parse<T>(&self, index: usize, err_str: impl Into<String>) -> Result<T>
     where T: FromStr {
         let s: String = err_str.into();
 
@@ -99,7 +99,7 @@ impl FieldsWrapper<'_> {
     }
 }
 
-pub fn extract_item_data(fields: &[&str]) -> Kb2Result<Item> {
+pub fn extract_item_data(fields: &[&str]) -> Result<Item> {
     let err_str = "Invalid item in Object table";
 
     assert!(fields.len() == 8, "{}", err_str);

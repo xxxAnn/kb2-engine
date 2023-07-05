@@ -1,5 +1,5 @@
 use sqlite::Connection;
-use crate::{defs::{DB_PATH, Kb2Result}};
+use crate::{defs::{DB_PATH, Result}};
 
 use super::inventory::Inventory;
 
@@ -8,7 +8,7 @@ pub struct DBConnection {
 }
 
 impl DBConnection {
-    pub fn new() -> Kb2Result<Self> {
+    pub fn new() -> Result<Self> {
         let conn = sqlite::open(DB_PATH)?;
 
         Ok(Self {
@@ -16,7 +16,7 @@ impl DBConnection {
         })
     }
 
-    fn _create_user(&self, userid: u64) -> Kb2Result<()> {
+    fn _create_user(&self, userid: u64) -> Result<()> {
         let query = format!("
             INSERT INTO userdata (userid, inventory) VALUES ({userid}, '0:100')"
         );
@@ -43,7 +43,7 @@ impl DBConnection {
         inv_str
     }
 
-    pub fn update_player_inventory(&self, id: u64, inv_str: impl Into<String>) -> Kb2Result<()>{
+    pub fn update_player_inventory(&self, id: u64, inv_str: impl Into<String>) -> Result<()>{
         let inv: String = inv_str.into();
 
         
@@ -54,7 +54,7 @@ impl DBConnection {
         Ok(self.conn.execute(query)?)
     }
 
-    pub fn get_player_inventory(&self, userid: u64) -> Kb2Result<Inventory> {   
+    pub fn get_player_inventory(&self, userid: u64) -> Result<Inventory> {   
         if let Some(tx) = self._get_inventory_str(userid) {
             Ok(Inventory::new(tx))
         } else {

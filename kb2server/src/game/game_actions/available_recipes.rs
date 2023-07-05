@@ -1,6 +1,6 @@
 
 
-use crate::{Data, game::message::GameMessage, Kb2Result, ErrorType};
+use crate::{Data, game::message::GameMessage, Result, Error};
 
 use super::{Summary, Summarize};
 
@@ -44,10 +44,10 @@ impl<'a> AvailableRecipes<'a> {
 impl<'a> Summarize<'a> for AvailableRecipes<'a> {
     type ResultSummary = AvailableRecipesSummary;
 
-    fn call(self) -> Kb2Result<AvailableRecipesSummary> {
+    fn call(self) -> Result<AvailableRecipesSummary> {
         let gamedata = self.data.gamedata();
         let user = self.data.player_mut(self.userid)
-            .ok_or(ErrorType::CantCreateUser)?;
+            .ok_or(Error::CantCreateUser)?;
 
         let temp = user.possible_recipes(&gamedata);
         let res = temp
@@ -58,7 +58,7 @@ impl<'a> Summarize<'a> for AvailableRecipes<'a> {
         Ok(AvailableRecipesSummary::new(&res))
     }
 
-    fn from_message(data: &'a mut Data, gm: &GameMessage) -> Kb2Result<Self> {
+    fn from_message(data: &'a mut Data, gm: &GameMessage) -> Result<Self> {
         Ok(AvailableRecipes::new(data, gm.get_numeric_line(1)?))
     }
 }

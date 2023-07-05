@@ -1,6 +1,6 @@
 use rand::{thread_rng, Rng};
 
-use crate::defs::{MAP_PATH, Kb2Result, MAP_SIZE};
+use crate::defs::{MAP_PATH, Result, MAP_SIZE};
 
 use super::gamedata::TileType;
 #[derive(Clone)]
@@ -46,7 +46,7 @@ impl Map {
         }
     }
 
-    pub fn save(&mut self) -> Kb2Result<()> {
+    pub fn save(&mut self) -> Result<()> {
         if self.change {
             std::fs::write(MAP_PATH, self.dump())?;
             self.change = false;

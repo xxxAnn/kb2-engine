@@ -1,6 +1,6 @@
 use kb2lib::prelude::Dump;
 
-use crate::{Data, game::message::GameMessage, Kb2Result, ErrorType};
+use crate::{Data, game::message::GameMessage, Result, Error};
 
 use super::{Summarize};
 
@@ -21,14 +21,14 @@ impl<'a> GetUser<'a> {
 impl<'a> Summarize<'a> for GetUser<'a> {
     type ResultSummary = String;
 
-    fn call(self) -> Kb2Result<String> {
+    fn call(self) -> Result<String> {
         let user = self.data.player_mut(self.userid)
-            .ok_or(ErrorType::CantCreateUser)?;
+            .ok_or(Error::CantCreateUser)?;
 
         Ok(user.dump())
     }
 
-    fn from_message(data: &'a mut Data, gm: &GameMessage) -> Kb2Result<Self> {
+    fn from_message(data: &'a mut Data, gm: &GameMessage) -> Result<Self> {
         Ok(GetUser::new(data, gm.get_numeric_line(1)?))
     }
 }

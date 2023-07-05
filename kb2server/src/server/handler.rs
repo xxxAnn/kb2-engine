@@ -1,7 +1,7 @@
-use crate::Kb2Result;
+use crate::Result;
 
 pub trait Handler {
-    fn handle(&mut self, recv: impl Into<String>) -> Kb2Result<String> {
+    fn handle(&mut self, recv: impl Into<String>) -> Result<String> {
         println!("Received: '{}'", recv.into());
 
         Ok("ACK".to_string())

@@ -6,7 +6,7 @@ mod handler;
 pub use handler::Handler;
 pub use handler::BaseHandler;
 
-use crate::Kb2Result;
+use crate::Result;
 
 pub struct Server<T>
 where T: Handler {
@@ -30,7 +30,7 @@ where T: Handler {
     }
 
 
-    pub fn serve(&mut self) -> Kb2Result<()> {
+    pub fn serve(&mut self) -> Result<()> {
         let listener = TcpListener::bind(self.__create_binding_addr())?;
 
         for strm in listener.incoming() {

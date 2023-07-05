@@ -1,7 +1,7 @@
 mod message;
 pub mod game_actions;
 
-use crate::{Data, server::Handler, Kb2Result};
+use crate::{Data, server::Handler, Result};
 
 use game_actions::Summary;
 
@@ -29,7 +29,7 @@ impl Game {
 }
 
 impl Handler for Game {
-    fn handle(&mut self, recv: impl Into<String>) -> Kb2Result<String> {
+    fn handle(&mut self, recv: impl Into<String>) -> Result<String> {
         let recv_str: String = recv.into();
         let gm = GameMessage::new(&recv_str)?;
 
