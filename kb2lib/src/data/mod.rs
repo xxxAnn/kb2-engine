@@ -56,10 +56,12 @@ impl Data {
         self.gamedata.clone()
     }
 
-    fn add_player(&mut self, id: u64) {
+    fn add_player(&mut self, id: u64) -> Kb2Result<()> {
         self.users.push(
-            User::new(id)
+            User::new(id)?
         );
+
+        Ok(())
     }
 
     fn get_player_mut(&mut self, id: u64) -> Option<&mut User> {
@@ -106,7 +108,7 @@ impl Data {
         if self.check_if_player_exists(id) {
             self.get_player(id) 
         } else {
-            self.add_player(id);
+            self.add_player(id).ok()?;
             self.player(id)
         }
     }
@@ -115,7 +117,7 @@ impl Data {
         if self.check_if_player_exists(id) {
             self.get_player_mut(id)
         } else {
-            self.add_player(id);
+            self.add_player(id).ok()?;
             self.player_mut(id)
         }
     }        

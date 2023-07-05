@@ -20,29 +20,22 @@ impl std::fmt::Debug for User {
             .finish()
     }
 }
-
-impl Clone for User {
-    fn clone(&self) -> Self {
-        User::new(self.id)
-    }
-}
-
 impl User {
-    pub fn new(id: u64) -> Self {
-        let connector = DBConnection::new().expect("Could not connect to Database.");
-        let inventory = connector.get_player_inventory(id);
+    pub fn new(id: u64) -> Kb2Result<Self> {
+        let connector = DBConnection::new()?;
+        let inventory = connector.get_player_inventory(id)?;
 
-        Self {
+        Ok(Self {
             id,
             inventory,
             last_energy_use: 0,
             connector,
-        }.init()
+        }.init()?)
     }    
 
-    fn init(mut self) -> Self {
-        self.save();
-        self
+    fn init(mut self) -> Kb2Result<Self> {
+        self.save()?;
+        Ok(self)
     }
 
     fn energy_use(&mut self) -> Kb2Result<()> {

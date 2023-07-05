@@ -42,6 +42,7 @@ impl From<TileType> for u64 {
 #[derive(Debug, Clone)]
 pub struct TileClass {
     id: usize,
+    #[allow(dead_code)]
     name: String, 
     mults: Vec<(usize, u64)>
 }

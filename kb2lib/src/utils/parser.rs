@@ -2,9 +2,6 @@ use std::str::FromStr;
 
 use crate::{prelude::Item, defs::Kb2Result, data::{TileType, TileClass}};
 
-type x<T> = dyn Iterator<Item = Option<T>>;
-
-
 fn parse_mults(s: impl Into<String>) -> Vec<(usize, u64)> {
     let s_s: String = s.into();
 

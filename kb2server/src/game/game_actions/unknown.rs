@@ -1,6 +1,6 @@
 use crate::{Data, game::message::GameMessage, Kb2Result};
 
-use super::{Summarize};
+use super::Summarize;
 
 pub struct Unknown;
 

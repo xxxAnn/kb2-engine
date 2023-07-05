@@ -54,13 +54,13 @@ impl DBConnection {
         Ok(self.conn.execute(query)?)
     }
 
-    pub fn get_player_inventory(&self, userid: u64) -> Inventory {   
+    pub fn get_player_inventory(&self, userid: u64) -> Kb2Result<Inventory> {   
         if let Some(tx) = self._get_inventory_str(userid) {
-            Inventory::new(tx)
+            Ok(Inventory::new(tx))
         } else {
-            self._create_user(userid);
+            self._create_user(userid)?;
     
-            Inventory::new("0:100")
+            Ok(Inventory::new("0:100"))
         }
     }
 }
