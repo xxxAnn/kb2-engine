@@ -1,5 +1,7 @@
 use std::ops::Mul;
 
+use crate::prelude::Dump;
+
 
 #[derive(Debug, Clone)]
 pub struct Recipe {
@@ -40,8 +42,8 @@ impl Recipe {
     }
 }
 
-impl ToString for Recipe {
-    fn to_string(&self) -> String {
+impl Dump for Recipe {
+    fn dump(&self) -> String {
         let inps = self.inputs.iter().map(|(id, q)| format!("{id}:{q}")).collect::<Vec<String>>().join(",");
         let outs = self.outputs.iter().map(|(id, q)| format!("{id}:{q}")).collect::<Vec<String>>().join(",");
         format!("{inps}->{outs}")

@@ -1,3 +1,5 @@
+use kb2lib::prelude::Dump;
+
 use crate::{Data, game::message::GameMessage, Result};
 
 use super::{Summarize};
@@ -29,7 +31,7 @@ impl<'a> Summarize<'a> for GetRecipe<'a> {
                 .ok_or("Recipe ID not found"
                     .to_owned()
                 )?
-                .to_string()
+                .dump()
             )
         )
     }

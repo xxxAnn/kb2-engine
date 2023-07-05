@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::{utils::parser::{parse_item_list, extract_item_data}, defs::{OBJECT_TABLE_FILE, CRAFT_RECIPES_FILE, Result}, utils::Error};
+use crate::{utils::parser::{parse_item_list, extract_item_data}, defs::{OBJECT_TABLE_FILE, CRAFT_RECIPES_FILE, Result}, utils::Error, prelude::Dump};
 
 mod item;
 mod recipe;
@@ -48,7 +48,7 @@ impl GameData {
 
     pub fn recipes_text(&self) -> String {
         let count = self.recipes.len();
-        let recipes_txt = self.recipes.iter().map(std::string::ToString::to_string).collect::<Vec<String>>().join("\r\n");
+        let recipes_txt = self.recipes.iter().map(Dump::dump).collect::<Vec<String>>().join("\r\n");
         format!("{count}\r\n{recipes_txt}")
     }
 

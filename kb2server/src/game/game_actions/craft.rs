@@ -1,3 +1,5 @@
+use kb2lib::prelude::Dump;
+
 use crate::{Data, game::message::GameMessage, Result, Error, Recipe};
 
 use super::{Summary, Summarize};
@@ -34,7 +36,7 @@ impl CraftSummary {
 
 impl Summary for CraftSummary {
     fn text(&self) -> String {
-        format!("{}\r\n{}\r\n", "craft_", self.rcp.to_string())
+        format!("{}\r\n{}\r\n", "craft_", self.rcp.dump())
     }
 }
 
