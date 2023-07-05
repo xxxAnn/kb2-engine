@@ -125,7 +125,7 @@ impl User {
         temp
     }
 
-    fn my_tile(&self, map: &mut Map) -> TileType {
+    pub fn my_tile(&self, map: &mut Map) -> TileType {
         map.get_tile(
             self.inventory.item_quantity(special_item::X_LOCATION) as usize, 
             self.inventory.item_quantity(special_item::X_LOCATION) as usize

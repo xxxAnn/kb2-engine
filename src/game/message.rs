@@ -2,7 +2,7 @@ use std::str::FromStr;
 
 use crate::{prelude::Data, defs::{ErrorType, Kb2Result}};
 
-use super::{Summary, game_actions::{Exploit, Summarize, AvailableRecipes, GetUser, Unknown, GetRecipe, GetRecipes, Craft}};
+use super::{Summary, game_actions::{Exploit, Summarize, AvailableRecipes, GetUser, Unknown, GetRecipe, GetRecipes, Craft, GetLocation}};
 
 pub struct GameMessage {
     code: u16,
@@ -16,6 +16,7 @@ pub enum Dispatcher {
     GetRecipe,
     AvailableRecipes,
     Craft,
+    GetLocation,
     Unknown
 }
 
@@ -44,6 +45,7 @@ impl Dispatcher {
             3 => Dispatcher::GetRecipe,
             4 => Dispatcher::AvailableRecipes,
             5 => Dispatcher::Craft,
+            6 => Dispatcher::GetLocation,
             _ => Dispatcher::Unknown
         }
     }
@@ -60,6 +62,7 @@ impl Dispatcher {
             GetRecipe,
             AvailableRecipes,
             Craft,
+            GetLocation,
             Unknown
         )
     }

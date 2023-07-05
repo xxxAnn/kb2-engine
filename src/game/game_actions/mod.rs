@@ -7,6 +7,7 @@ mod unknown;
 mod get_recipe;
 mod get_recipes;
 mod craft;
+mod get_location;
 
 pub use available_recipes::AvailableRecipes;
 pub use exploit::Exploit;
@@ -15,6 +16,7 @@ pub use unknown::Unknown;
 pub use get_recipe::GetRecipe;
 pub use get_recipes::GetRecipes;
 pub use craft::Craft;
+pub use get_location::GetLocation;
 
 use super::message::GameMessage;
 
