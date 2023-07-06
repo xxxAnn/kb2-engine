@@ -42,8 +42,8 @@ impl GameData {
         Ok(self.map.tile(tt).ok_or(Error::GameDataError("Invalid tile type"))?) // shouldn't error probably
     } 
 
-    pub fn get_recipe_by_id(&self, _id: usize) -> Option<&Recipe> {
-        self.recipes.get(0)
+    pub fn get_recipe_by_id(&self, id: usize) -> Option<&Recipe> {
+        self.recipes.get(id)
     }   
 
     pub fn recipes_text(&self) -> String {
