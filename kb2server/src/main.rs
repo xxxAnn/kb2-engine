@@ -10,7 +10,7 @@ use kb2lib::defs::*;
 fn main() -> Result<()> {
     let data = Data::new()?;
 
-    Server::new(LOCAL_ADDR, LOCAL_PORT, Game::new(data))
+    Server::new("0.0.0.0", 80u16, Game::new(data))
         .serve()?;
 
     Ok(())
